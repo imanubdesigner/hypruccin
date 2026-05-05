@@ -45,7 +45,9 @@ ln -sf "$HOME/.config/manu/current/theme/neovim.lua" "$HOME/.config/nvim/lua/plu
 echo "$THEME_NAME" >"$HOME/.config/manu/current/theme.name"
 
 # Change background with theme
-manu-theme-bg-next
+if [[ $MANU_THEME_SKIP_BACKGROUND != "1" ]]; then
+  manu-theme-bg-next
+fi
 
 # Restart components to apply new theme
 if pgrep -x waybar >/dev/null; then

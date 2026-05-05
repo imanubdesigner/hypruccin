@@ -3,6 +3,7 @@
 # manu:summary=Refresh the current theme from its templates.
 
 THEME_NAME_PATH="$HOME/.config/manu/current/theme.name"
+
 if [[ -f $THEME_NAME_PATH ]]; then
-  manu-theme-set "$(cat $THEME_NAME_PATH)"
+  MANU_THEME_SKIP_BACKGROUND=1 manu-theme-set "$(cat $THEME_NAME_PATH)"
 fi

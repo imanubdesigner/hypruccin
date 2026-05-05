@@ -17,3 +17,6 @@ if [[ -f $GNOME_ICONS_THEME ]]; then
 else
   gsettings set org.gnome.desktop.interface icon-theme "Yaru-blue"
 fi
+
+# Make middle-click paste consistent across apps by enabling GTK/Chromium apps to receive selection buffer on button3
+gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true

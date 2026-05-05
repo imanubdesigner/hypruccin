@@ -132,13 +132,23 @@ show_learn_menu() {
   esac
 }
 show_trigger_menu() {
-  case $(menu "Trigger" "  Capture\n  Share\n󰨚  Toggle") in
+  case $(menu "Trigger" "  Capture\n󰧸  Transcode\n  Share\n󰨚  Toggle") in
   *Capture*) show_capture_menu ;;
+  *Transcode*) show_transcode_menu ;;
   *Share*) show_share_menu ;;
   *Toggle*) show_toggle_menu ;;
   *) show_main_menu ;;
   esac
 }
+
+show_transcode_menu() {
+  case $(menu "Transcode" "  Picture\n  Video") in
+  *Picture*) present_terminal "manu-transcode --path '$HOME/Pictures'" ;;
+  *Video*) present_terminal "manu-transcode --path '$HOME/Videos'" ;;
+  *) back_to show_trigger_menu ;;
+  esac
+}
+
 show_share_menu() {
   case $(menu "Share" "  Clipboard\n  File \n  Folder") in
   *Clipboard*) terminal bash -c "manu-menu-share clipboard" ;;
@@ -504,6 +514,7 @@ go_to_menu() {
   *style*) show_style_menu ;;
   *theme*) show_theme_menu ;;
   *share*) show_share_menu ;;
+  *transcode*) show_transcode_menu ;;
   *power*) show_power_profile_menu ;;
   *background*) show_background_menu ;;
   *capture*) show_capture_menu ;;
