@@ -2,8 +2,8 @@
 
 # manu:summary=Install a theme from a git repository
 # manu:args=[git-repo-url]
-# manu:examples=manu theme install https://github.com/example/manu-example-theme.git
-# manu:examples=omarchy theme install git@github.com:example/omarchy-example-theme.git
+# manu:examples=manu theme install https://github.com/example/omarchy-example-theme.git
+# manu:examples=manu theme install git@github.com:example/omarchy-example-theme.git
 
 if [[ -z $1 ]]; then
   echo -e "\e[32m󰸌 Install a new theme from a git repo\n\e[0m"

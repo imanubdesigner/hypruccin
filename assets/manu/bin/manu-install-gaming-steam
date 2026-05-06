@@ -7,7 +7,7 @@ set -e
 
 echo "Installing Steam..."
 manu-pkg-add steam
-omarchy-install-gaming-gpu-lib32
+manu-install-gaming-gpu-lib32
 
 echo ""
 echo "Steam will start automatically now. This might take a while..."

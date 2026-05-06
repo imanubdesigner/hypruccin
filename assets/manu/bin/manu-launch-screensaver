@@ -39,7 +39,7 @@ for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
     ;;
   *foot*)
     hyprctl dispatch exec -- \
-      foot --app-id=org.omarchy.screensaver \
+      foot --app-id=org.manu.screensaver \
       --config="$MANU_PATH/default/foot/screensaver.ini" \
       -e manu-screensaver
     ;;

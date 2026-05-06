@@ -2,7 +2,7 @@
 
 # manu:summary=Extract text from a screenshot region with OCR
 # manu:group=capture
-# manu:examples=omarchy capture ocr
+# manu:examples=manu capture ocr
 
 # Keep hyprpicker alive until after grim captures so the screenshot sees the
 # frozen overlay rather than live content shifting during teardown.
