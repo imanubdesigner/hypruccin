@@ -1,13 +1,18 @@
 #!/bin/bash
 
 # manu:summary=Sync Omarchy theme to all Obsidian vaults
+# manu:hidden=true
 
 CURRENT_THEME_DIR="$HOME/.config/manu/current/theme"
+
 [[ -f $CURRENT_THEME_DIR/obsidian.css ]] || exit 0
+
 jq -r '.vaults | values[].path' ~/.config/obsidian/obsidian.json 2>/dev/null | while read -r vault_path; do
   [[ -d $vault_path/.obsidian ]] || continue
+
   theme_dir="$vault_path/.obsidian/themes/Manu"
   mkdir -p "$theme_dir"
+
   [[ -f $theme_dir/manifest.json ]] || cat >"$theme_dir/manifest.json" <<'EOF'
 {
   "name": "Manu",
@@ -18,5 +23,6 @@ jq -r '.vaults | values[].path' ~/.config/obsidian/obsidian.json 2>/dev/null | w
   "authorUrl": "https://github.com/imanubdesigner/"
 }
 EOF
+
   cp "$CURRENT_THEME_DIR/obsidian.css" "$theme_dir/theme.css"
 done

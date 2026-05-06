@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # manu:summary=Apply the current theme color to Chromium and Brave
+# manu:hidden=true
 
 CHROMIUM_THEME=~/.config/manu/current/theme/chromium.theme
 if manu-cmd-present chromium || manu-cmd-present brave || manu-cmd-present brave-origin-beta; then

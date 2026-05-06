@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # manu:summary=Generate themed config files from Omarchy templates
+# manu:hidden=true
 
 TEMPLATES_DIR="$MANU_PATH/default/themed"
 USER_TEMPLATES_DIR="$HOME/.config/manu/themed"
@@ -16,11 +17,13 @@ hex_to_rgb() {
 # Only generate dynamic templates for themes with a colors.toml definition
 if [[ -f $COLORS_FILE ]]; then
   sed_script=$(mktemp)
+
   while IFS='=' read -r key value; do
     key="${key//[\"\' ]/}"                # strip quotes and spaces from key
     [[ $key && $key != \#* ]] || continue # skip empty lines and comments
     value="${value#*[\"\']}"
     value="${value%%[\"\']*}" # extract value between quotes (ignores inline comments)
+
     printf 's|{{ %s }}|%s|g\n' "$key" "$value"            # {{ key }} -> value
     printf 's|{{ %s_strip }}|%s|g\n' "$key" "${value#\#}" # {{ key_strip }} -> value without leading #
     if [[ $value =~ ^# ]]; then
@@ -28,6 +31,7 @@ if [[ -f $COLORS_FILE ]]; then
       echo "s|{{ ${key}_rgb }}|${rgb}|g"
     fi
   done <"$COLORS_FILE" >"$sed_script"
+
   shopt -s nullglob
 
   # Process user templates first, then built-in templates (user overrides built-in)
@@ -40,5 +44,6 @@ if [[ -f $COLORS_FILE ]]; then
       sed -f "$sed_script" "$tpl" >"$output_path"
     fi
   done
+
   rm "$sed_script"
 fi

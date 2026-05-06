@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# manu:summary=Lock the computer and turn off the display
+# manu:group=system
+# manu:name=lock
+# manu:examples=manu system lock
+
+if ! pidof hyprlock >/dev/null; then
+  (
+    hyprlock
+    manu-system-wake
+  ) &
+fi
+
+# Set keyboard layout to default (first layout)
+hyprctl switchxkblayout all 0 >/dev/null 2>&1
+
+# Ensure 1password is locked
+if pgrep -x "1password" >/dev/null; then
+  1password --lock &
+fi
+
+# Avoid running screensaver when locked
+pkill -f org.manu.screensaver
+
+if [[ ${MANU_LOCK_ONLY:-false} != "true" ]]; then
+  (
+    sleep 3
+    pidof hyprlock >/dev/null || exit 0
+    manu-brightness-keyboard off
+    manu-brightness-display off
+  ) &
+fi

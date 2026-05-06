@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # manu:summary=Apply current Manu theme colors to running Foot terminals
+# manu:hidden=true
 
 foot_theme=~/.config/manu/current/theme/foot.ini
 

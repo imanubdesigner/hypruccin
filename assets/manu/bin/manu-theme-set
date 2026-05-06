@@ -68,4 +68,4 @@ manu-theme-set-vscode
 manu-theme-set-obsidian
 
 # Call hook on theme set
-manu-hook theme-set "$THEME_NAME"
+manu-hook theme-set "$THEME_NAME" >/dev/null
