@@ -53,6 +53,11 @@ install_and_launch() {
 install_font() {
   present_terminal "echo 'Installing $1...'; manu-pkg-add $2 && sleep 2 && manu-font-set '$3'"
 }
+
+install_terminal() {
+  present_terminal "manu-install-terminal $1"
+}
+
 aur_install() {
   present_terminal "echo 'Installing $1 from AUR...'; manu-pkg-aur-add $2"
 }
@@ -232,13 +237,14 @@ show_background_menu() {
   manu-launch-walker -m menus:manuBackgroundSelector --width 800 --minheight 400
 }
 show_install_menu() {
-  case $(menu "Install" "󰣇  Package\n󰂓  AUR\n󰖟  Web App\n󰞷  TUI\n󰵮  Development\n  Editor\n󱚤  AI\n  Style\n  Gaming") in
+  case $(menu "Install" "󰣇  Package\n󰂓  AUR\n󰖟  Web App\n󰞷  TUI\n󰵮  Development\n  Editor\n  Terminal\n󱚤  AI\n  Style\n  Gaming") in
   *Package*) terminal manu-pkg-install ;;
   *AUR*) terminal manu-pkg-aur-install ;;
   *Web*) present_terminal manu-install-webapp ;;
   *TUI*) present_terminal manu-tui-install ;;
   *Development*) show_install_development_menu ;;
   *Editor*) show_install_editor_menu ;;
+  *Terminal*) show_install_terminal_menu ;;
   *AI*) show_install_ai_menu ;;
   *Style*) show_install_style_menu ;;
   *Gaming*) show_install_gaming_menu ;;
@@ -250,10 +256,20 @@ show_install_editor_menu() {
   case $(menu "Install" "  VSCode\n  Cursor\n  Zed\n  Sublime Text\n  Helix\n  Emacs") in
   *VSCode*) present_terminal manu-install-vscode ;;
   *Cursor*) install_and_launch "Cursor" "cursor-bin" "cursor" ;;
-  *Zed*) install_and_launch "Zed" "zed" "dev.zed.Zed" ;;
+  *Zed*) present_terminal manu-install-zed ;;
   *Sublime*) install_and_launch "Sublime Text" "sublime-text-4" "sublime_text" ;;
   *Helix*) present_terminal manu-install-helix ;;
   *Emacs*) install "Emacs" "emacs-wayland" && systemctl --user enable --now emacs.service ;;
+  *) show_install_menu ;;
+  esac
+}
+
+show_install_terminal_menu() {
+  case $(menu "Install" "  Alacritty\n  Foot\n  Ghostty\n  Kitty") in
+  *Alacritty*) install_terminal "alacritty" ;;
+  *Foot*) install_terminal "foot" ;;
+  *Ghostty*) install_terminal "ghostty" ;;
+  *Kitty*) install_terminal "kitty" ;;
   *) show_install_menu ;;
   esac
 }

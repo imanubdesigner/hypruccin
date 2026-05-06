@@ -16,10 +16,13 @@ fi
 
 # Silently quit Walker on overlay
 walker -q
+
 focused=$(manu-hyprland-monitor-focused)
 terminal=$(xdg-terminal-exec --print-id)
+
 for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
   hyprctl dispatch focusmonitor $m
+
   case $terminal in
   *Alacritty*)
     hyprctl dispatch exec -- \
@@ -34,6 +37,12 @@ for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
       --font-size=18 \
       -e manu-screensaver
     ;;
+  *foot*)
+    hyprctl dispatch exec -- \
+      foot --app-id=org.omarchy.screensaver \
+      --config="$MANU_PATH/default/foot/screensaver.ini" \
+      -e manu-screensaver
+    ;;
   *kitty*)
     hyprctl dispatch exec -- \
       kitty --class=org.manu.screensaver \
@@ -42,7 +51,7 @@ for m in $(hyprctl monitors -j | jq -r '.[] | .name'); do
       -e manu-screensaver
     ;;
   *)
-    notify-send -u low "✋  Screensaver only runs in Alacritty, Ghostty, or Kitty"
+    notify-send -u low "✋  Screensaver only runs in Alacritty, Foot, Ghostty, or Kitty"
     ;;
   esac
 done

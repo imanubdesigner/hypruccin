@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Install Zed Editor and omazed to use the current Manu theme.
+
+echo "Installing Zed Editor..."
+manu-pkg-add zed omazed
+
+# Apply Manu theme to Zed
+omazed setup
+
+setsid gtk-launch dev.zed.Zed

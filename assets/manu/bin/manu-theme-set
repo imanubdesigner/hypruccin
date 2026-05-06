@@ -61,6 +61,7 @@ manu-restart-opencode
 manu-restart-mako
 
 # Change app-specific themes
+omarchy-theme-set-foot
 manu-theme-set-gnome
 manu-theme-set-browser
 manu-theme-set-vscode
