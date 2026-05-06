@@ -19,9 +19,6 @@ cp -r $BASE_DIR/assets/applications/* /home/$SUDO_USER/.local/share/applications
 chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.local/share/applications" \
   "Copy all .desktop and mime files from assets/applications to local share" "yes" "no"
 
-# -------------------- Logo --------------------
-run_command "cp $BASE_DIR/assets/logo.txt /home/$SUDO_USER/ && chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/logo.txt" "Copy logo.txt" "no" "no"
-
 # -------------------- .XCompose --------------------
 run_command "cp $BASE_DIR/assets/.XCompose /home/$SUDO_USER/ && chown $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.XCompose" "Copy .XCompose configuration to home directory" "no" "no"
 

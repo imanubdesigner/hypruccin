@@ -394,7 +394,7 @@ show_install_gaming_menu() {
   esac
 }
 show_remove_menu() {
-  case $(menu "Remove" "󰣇  Package\n  Web App\n  Browser\n  TUI\n󰵮  Development\n  Gaming\n  Dictation\n󰮯  Cache Packages\n  Clear Logs\n󰸌  Theme") in
+  case $(menu "Remove" "󰣇  Package\n  Web App\n  Browser\n  TUI\n󰵮  Development\n  Gaming\n  Dictation\n󰮯  Cache Packages\n  Clear Logs\n󰸌  Theme\n󰍲  Windows") in
   *Cache*) present_terminal manu-packages-cleaning ;;
   *Package*) terminal manu-pkg-remove ;;
   *Web*) present_terminal manu-webapp-remove ;;
@@ -405,6 +405,7 @@ show_remove_menu() {
   *Dictation*) present_terminal manu-voxtype-remove ;;
   *"Clear Logs"*) present_terminal manu-clear-journalctl ;;
   *Theme*) present_terminal manu-theme-remove ;;
+  *Windows*) present_terminal "manu-windows-vm remove" ;;
   *) show_main_menu ;;
   esac
 }
