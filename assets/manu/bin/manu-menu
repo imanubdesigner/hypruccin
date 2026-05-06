@@ -237,18 +237,45 @@ show_background_menu() {
   manu-launch-walker -m menus:manuBackgroundSelector --width 800 --minheight 400
 }
 show_install_menu() {
-  case $(menu "Install" "󰣇  Package\n󰂓  AUR\n󰖟  Web App\n󰞷  TUI\n󰵮  Development\n  Editor\n  Terminal\n󱚤  AI\n  Style\n  Gaming") in
+  case $(menu "Install" "󰣇  Package\n󰣇  AUR\n  Web App\n  TUI\n  Service\n  Style\n󰵮  Development\n  Editor\n  Terminal\n  Browser\n󱚤  AI\n  Gaming\n󰍲  Windows") in
   *Package*) terminal manu-pkg-install ;;
   *AUR*) terminal manu-pkg-aur-install ;;
-  *Web*) present_terminal manu-install-webapp ;;
+  *Web*) present_terminal manu-webapp-install ;;
   *TUI*) present_terminal manu-tui-install ;;
+  *Service*) show_install_service_menu ;;
+  *Style*) show_install_style_menu ;;
   *Development*) show_install_development_menu ;;
   *Editor*) show_install_editor_menu ;;
   *Terminal*) show_install_terminal_menu ;;
-  *AI*) show_install_ai_menu ;;
-  *Style*) show_install_style_menu ;;
+  *Browser*) show_install_browser_menu ;;
   *Gaming*) show_install_gaming_menu ;;
+  *AI*) show_install_ai_menu ;;
+  *Windows*) present_terminal "manu-windows-vm install" ;;
   *) show_main_menu ;;
+  esac
+}
+
+show_install_browser_menu() {
+  case $(menu "Install" "  Chrome\n  Edge\n  Brave\n  Brave Origin\n  Firefox\n  Zen") in
+  *Chrome*) present_terminal "manu-install-browser chrome" ;;
+  *Edge*) present_terminal "manu-install-browser edge" ;;
+  *"Brave Origin"*) present_terminal "manu-install-browser brave-origin" ;;
+  *Brave*) present_terminal "manu-install-browser brave" ;;
+  *Firefox*) present_terminal "manu-install-browser firefox" ;;
+  *Zen*) present_terminal "manu-install-browser zen" ;;
+  *) show_install_menu ;;
+  esac
+}
+
+show_install_service_menu() {
+  case $(menu "Install" "  Dropbox\n  Tailscale\n󱇱  NordVPN [AUR]\n󰏖  ONCE\n󰟵  Bitwarden\n  Chromium Account") in
+  *Dropbox*) present_terminal manu-install-dropbox ;;
+  *Tailscale*) present_terminal manu-install-tailscale ;;
+  *NordVPN*) present_terminal manu-install-nordvpn ;;
+  *ONCE*) present_terminal manu-install-once ;;
+  *Bitwarden*) install_and_launch "Bitwarden" "bitwarden bitwarden-cli" "bitwarden" ;;
+  *Chromium*) present_terminal manu-install-chromium-google-account ;;
+  *) show_install_menu ;;
   esac
 }
 
@@ -367,10 +394,11 @@ show_install_gaming_menu() {
   esac
 }
 show_remove_menu() {
-  case $(menu "Remove" "󰣇  Package\n  Web App\n  TUI\n󰵮  Development\n  Gaming\n  Dictation\n󰮯  Cache Packages\n  Clear Logs\n󰸌  Theme") in
+  case $(menu "Remove" "󰣇  Package\n  Web App\n  Browser\n  TUI\n󰵮  Development\n  Gaming\n  Dictation\n󰮯  Cache Packages\n  Clear Logs\n󰸌  Theme") in
   *Cache*) present_terminal manu-packages-cleaning ;;
   *Package*) terminal manu-pkg-remove ;;
   *Web*) present_terminal manu-webapp-remove ;;
+  *Browser*) show_remove_browser_menu ;;
   *TUI*) present_terminal manu-tui-remove ;;
   *Development*) show_remove_development_menu ;;
   *Gaming*) show_remove_gaming_menu ;;
@@ -378,6 +406,18 @@ show_remove_menu() {
   *"Clear Logs"*) present_terminal manu-clear-journalctl ;;
   *Theme*) present_terminal manu-theme-remove ;;
   *) show_main_menu ;;
+  esac
+}
+
+show_remove_browser_menu() {
+  case $(menu "Remove" "  Chrome\n  Edge\n  Brave\n  Brave Origin\n  Firefox\n  Zen") in
+  *Chrome*) present_terminal "manu-remove-browser chrome" ;;
+  *Edge*) present_terminal "manu-remove-browser edge" ;;
+  *"Brave Origin"*) present_terminal "manu-remove-browser brave-origin" ;;
+  *Brave*) present_terminal "manu-remove-browser brave" ;;
+  *Firefox*) present_terminal "manu-remove-browser firefox" ;;
+  *Zen*) present_terminal "manu-remove-browser zen" ;;
+  *) show_remove_menu ;;
   esac
 }
 
@@ -468,10 +508,9 @@ show_restart_hardware_menu() {
   esac
 }
 show_setup_menu() {
-  case $(menu "Setup" "󰵅  Power Profile\n󰊢  Git Configuration\n  Chromium\n󰣇  Pacman\n󰱔  DNS\n󰁯  Tools\n󰄄  Restart") in
+  case $(menu "Setup" "󰵅  Power Profile\n󰊢  Git Configuration\n󰣇  Pacman\n󰱔  DNS\n󰁯  Tools\n󰄄  Restart") in
   *"Power Profile"*) show_power_profile_menu ;;
   *Git*) present_terminal manu-install-git-configuration ;;
-  *Chromium*) present_terminal manu-install-chromium-google-account ;;
   *Pacman*) show_setup_pacman_menu ;;
   *DNS*) present_terminal manu-setup-dns ;;
   *Tools*) show_setup_tools_menu ;;
