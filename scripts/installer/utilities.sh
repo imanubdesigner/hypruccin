@@ -15,7 +15,7 @@ run_command "yay -S --sudoloop --noconfirm --needed helium-browser-bin fastmod" 
 # -------------------- Applications & mimeinfo --------------------
 run_command "\
 mkdir -p /home/$SUDO_USER/.local/share/applications && \
-cp -r $BASE_DIR/assets/applications/* /home/$SUDO_USER/.local/share/applications/ && \
+cp -r $BASE_DIR/assets/manu/applications/* /home/$SUDO_USER/.local/share/applications/ && \
 chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.local/share/applications" \
   "Copy all .desktop and mime files from assets/applications to local share" "yes" "no"
 
