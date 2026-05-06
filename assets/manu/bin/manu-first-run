@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# manu:summary=Finish the installation of Omarchy with items that can only be done after logging in.
+# manu:summary=Finish the installation of Manu with items that can only be done after logging in.
 # manu:requires-sudo=true
 
 FLAG="$HOME/.local/share/manu/.first-run-done"
 LOG="$HOME/.local/share/manu/first-run.log"
-
 # Already ran — exit immediately
 [[ -f "$FLAG" ]] && exit 0
 mkdir -p "$(dirname "$LOG")"
@@ -15,37 +14,43 @@ mkdir -p "$(dirname "$LOG")"
   echo "$(date): First run started"
 
   # -------------------- User-Dirs --------------------
-  manu-first-run-user-dirs
+  $MANU_PATH/install/first-run/manu-first-run-user-dirs
 
   # -------------------- Firewall --------------------
-  manu-first-run-firewall
+  $MANU_PATH/install/first-run/manu-first-run-firewall
 
   # -------------------- Elephant --------------------
-  manu-first-run-elephant
+  $MANU_PATH/install/first-run/manu-first-run-elephant
 
-  # -------------------- GNOME / GTK Theme --------------------
-  manu-first-run-gnome-theme
+  # -------------------- Icons --------------------
+  $MANU_PATH/install/first-run/manu-first-run-icons
+
+  # -------------------- Webapps --------------------
+  $MANU_PATH/install/first-run/manu-first-run-webapps
 
   # -------------------- TUI Applications --------------------
-  manu-first-run-tui
-
-  # -------------------- Mise Configuration --------------------
-  manu-first-run-mise
+  $MANU_PATH/install/first-run/manu-first-run-tui
 
   # -------------------- NPX Wrapper Scripts --------------------
-  manu-first-run-npx
+  $MANU_PATH/install/first-run/manu-first-run-npx
+
+  # -------------------- GNOME / GTK Theme --------------------
+  $MANU_PATH/install/first-run/manu-first-run-gnome-theme
+
+  # -------------------- Mise Configuration --------------------
+  $MANU_PATH/install/first-run/manu-first-run-mise
 
   # -------------------- ZSH Configuration --------------------
-  manu-first-run-zsh
+  $MANU_PATH/install/first-run/manu-first-run-zsh
 
   # -------------------- XDG user dirs --------------------
   xdg-user-dirs-update
 
   # -------------------- Snapper + Limine --------------------
-  manu-first-run-limine-snapper
+  $MANU_PATH/install/first-run/manu-first-run-limine-snapper
 
   # -------------------- Restore visudo --------------------
-  manu-first-run-restore-visudo
+  $MANU_PATH/install/first-run/manu-first-run-restore-visudo
 
   # Mark as done — won't run again
   touch "$FLAG"
