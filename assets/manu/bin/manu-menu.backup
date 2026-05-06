@@ -62,7 +62,7 @@ aur_install() {
   present_terminal "echo 'Installing $1 from AUR...'; manu-pkg-aur-add $2"
 }
 open_in_editor() {
-  notify-send -u low "Editing config file" "$1"
+  notify-send "Editing config file" "$1"
   manu-launch-editor "$1"
 }
 aur_install_and_launch() {
@@ -156,7 +156,7 @@ show_transcode_menu() {
 
 show_share_menu() {
   case $(menu "Share" "  Clipboard\n  File \n  Folder") in
-  *Clipboard*) manu-menu-share clipboard ;;
+  *Clipboard*) terminal bash -c "manu-menu-share clipboard" ;;
   *File*) terminal bash -c "manu-menu-share file" ;;
   *Folder*) terminal bash -c "manu-menu-share folder" ;;
   *) back_to show_trigger_menu ;;
@@ -480,41 +480,27 @@ show_remove_elixir_menu() {
   esac
 }
 show_update_menu() {
-  case $(menu "Update" "󰣇  Hypruccin\n󰣇  Pacman\n  Firmware\n󰸌  Extra Themes\n󰮢  Process\n󰇅  Hardware\n  Timezone\n  Time") in
-    *Hypruccin*) present_terminal manu-update ;;
-    *Pacman*) show_update_pacman_menu ;;
+  case $(menu "Update" "󰣇  Pacman\n  Firmware\n󰸌  Extra Themes\n󰮢  Process\n  Timezone\n  Time") in
+    *Pacman*) present_terminal manu-update ;;
     *Firmware*) present_terminal manu-update-firmware ;;
     *Themes*) present_terminal manu-theme-update ;;
     *Process*) show_update_process_menu ;;
-    *Hardware*) show_update_hardware_menu ;;
     *Timezone*) present_terminal manu-tz-select ;;
     *Time*) present_terminal manu-update-time ;;
     *) show_main_menu ;;
   esac
 }
-show_update_pacman_menu() {
-  case $(menu "Pacman" "🟢 Stable\n🟡 RC\n🟠 Edge") in
-    *Stable*) present_terminal "manu-refresh-pacman stable" ;;
-    *RC*) present_terminal "manu-refresh-pacman rc" ;;
-    *Edge*) present_terminal "manu-refresh-pacman edge" ;;
-    *) show_update_menu ;;
-  esac
-}
 show_update_process_menu() {
-  case $(menu "Restart" "󰡗  Sudo\n󱓞  Walker\n  Waybar\n  Swayosd\n󱫖  Hypridle\n  Hyprsunset\n󰎟  Mako\n󰞅  XCompose") in
+  local options="󰡗  Sudo\n󱓞  Walker\n  Waybar\n  Swayosd\n󱫖  Hypridle\n  Hyprsunset\n󰞅  XCompose"
+  options="$options\n  Audio\n󱚾  Wi-Fi\n󰂯  Bluetooth"
+  case $(menu "Restart" "$options") in
     *Sudo*) present_terminal manu-reset-sudo ;;
     *Walker*) manu-restart-walker ;;
     *Waybar*) manu-restart-waybar ;;
     *Swayosd*) manu-restart-swayosd ;;
     *Hypridle*) manu-restart-hypridle ;;
     *Hyprsunset*) manu-restart-hyprsunset ;;
-    *Mako*) manu-restart-mako ;;
     *XCompose*) manu-restart-xcompose ;;
-    *) show_update_menu ;;
-  esac
-}
-show_update_hardware_menu() {
-  case $(menu "Restart" "  Audio\n󱚾  Wi-Fi\n󰂯  Bluetooth") in
     *Audio*) present_terminal manu-restart-pipewire ;;
     *Wi-Fi*) present_terminal manu-restart-wifi ;;
     *Bluetooth*) present_terminal manu-restart-bluetooth ;;
@@ -522,7 +508,7 @@ show_update_hardware_menu() {
   esac
 }
 show_setup_menu() {
-  local options="󰵅  Power Profile\n󰱔  DNS\n󰁯  Tools"
+  local options="󰵅  Power Profile\n󰣇  Pacman\n󰱔  DNS\n󰁯  Tools"
   options="$options\n󰊢  Audio\n󰤪  Wifi\n󰂯  Bluetooth\n󰒲  System Sleep"
   options="$options\n󰎟  Monitors"
   [[ -f ~/.config/hypr/bindings.conf ]] && options="$options\n  Keybindings"
@@ -531,6 +517,7 @@ show_setup_menu() {
 
   case $(menu "Setup" "$options") in
     *"Power Profile"*) show_power_profile_menu ;;
+    *Pacman*) show_setup_pacman_menu ;;
     *DNS*) present_terminal manu-setup-dns ;;
     *Tools*) show_setup_tools_menu ;;
     *Audio*) manu-launch-audio ;;
@@ -544,6 +531,40 @@ show_setup_menu() {
     *) show_main_menu ;;
   esac
 }
+show_setup_menu() {
+  local options="󰵅  Power Profile\n󰣇  Pacman\n󰱔  DNS\n󰁯  Tools"
+  options="$options\n󰊢  Audio\n󰤪  Wifi\n󰂯  Bluetooth\n󰒲  System Sleep"
+  options="$options\n󰎟  Monitors"
+  [[ -f ~/.config/hypr/bindings.conf ]] && options="$options\n  Keybindings"
+  [[ -f ~/.config/hypr/input.conf ]] && options="$options\n  Input"
+  options="$options\n󰄄  Restart"
+  options="$options\n  Config"
+
+  case $(menu "Setup" "$options") in
+    *"Power Profile"*) show_power_profile_menu ;;
+    *Pacman*) show_setup_pacman_menu ;;
+    *DNS*) present_terminal manu-setup-dns ;;
+    *Tools*) show_setup_tools_menu ;;
+    *Restart*) show_setup_restart_menu ;;
+    *Audio*) manu-launch-audio ;;
+    *Wifi*) manu-launch-wifi ;;
+    *Bluetooth*) manu-launch-bluetooth ;;
+    *"System Sleep"*) show_setup_system_menu ;;
+    *Monitors*) open_in_editor ~/.config/hypr/monitors.conf ;;
+    *Keybindings*) open_in_editor ~/.config/hypr/bindings.conf ;;
+    *Input*) open_in_editor ~/.config/hypr/input.conf ;;
+    *Config*) show_setup_config_menu ;;
+    *) show_main_menu ;;
+  esac
+}
+show_setup_pacman_menu() {
+  case $(menu "Pacman" "🟢  Stable\n🟡  RC\n🟠  Edge") in
+  *Stable*) present_terminal "manu-refresh-pacman stable" ;;
+  *RC*) present_terminal "manu-refresh-pacman rc" ;;
+  *Edge*) present_terminal "manu-refresh-pacman edge" ;;
+  *) show_setup_menu ;;
+  esac
+}
 show_setup_tools_menu() {
   case $(menu "Tools" "󰁯  Snapper Backup\n󰏔  Pkg History\n󰦗  Media Downloader\n󱊞  ISO to USB\n󰣌  Image Converter\n  Video Converter") in
   *"Snapper Backup"*) present_terminal manu-snapper-backup ;;
@@ -553,6 +574,13 @@ show_setup_tools_menu() {
   *"Image Converter"*) present_terminal manu-transcode-image ;;
   *"Video Converter"*) present_terminal manu-transcode-video ;;
   *) show_setup_menu ;;
+  esac
+}
+show_setup_restart_menu() {
+  case $(menu "Restart" "󰡗  Apps\n󰛧  Hardware") in
+    *Apps*) show_restart_apps_menu ;;
+    *Hardware*) show_restart_hardware_menu ;;
+    *) show_setup_menu ;;
   esac
 }
 
@@ -571,19 +599,18 @@ show_setup_system_menu() {
   fi
 
   case $(menu "System" "$options") in
-    *Suspend*)             manu-toggle-suspend ;;
-    *"Enable Hibernate"*)  present_terminal manu-hibernation-setup ;;
+    *Suspend*) manu-toggle-suspend ;;
+    *"Enable Hibernate"*) present_terminal manu-hibernation-setup ;;
     *"Disable Hibernate"*) present_terminal manu-hibernation-remove ;;
-    *)                     show_setup_menu ;;
+    *) show_setup_menu ;;
   esac
 }
 
 show_setup_config_menu() {
-  case $(menu "Config" "  Defaults\n  Hyprland\n  Hypridle\n  Hyprlock\n  Hyprsunset\n  Swayosd\n󰌧  Walker\n󰍜  Waybar\n󰞅  XCompose") in
+  case $(menu "Setup" "  Defaults\n  Hyprland\n  Hypridle\n  Hyprsunset\n  Swayosd\n󰌧  Walker\n󰍜  Waybar\n󰞅  XCompose") in
     *Defaults*) open_in_editor ~/.config/uwsm/default ;;
     *Hyprland*) open_in_editor ~/.config/hypr/hyprland.conf ;;
     *Hypridle*) open_in_editor ~/.config/hypr/hypridle.conf && manu-restart-hypridle ;;
-    *Hyprlock*) open_in_editor ~/.config/hypr/hyprlock.conf ;;
     *Hyprsunset*) open_in_editor ~/.config/hypr/hyprsunset.conf && manu-restart-hyprsunset ;;
     *Swayosd*) open_in_editor ~/.config/swayosd/config.toml && manu-restart-swayosd ;;
     *Walker*) open_in_editor ~/.config/walker/config.toml && manu-restart-walker ;;
@@ -592,7 +619,6 @@ show_setup_config_menu() {
     *) show_setup_menu ;;
   esac
 }
-
 show_system_menu() {
   local options="󱄄  Screensaver\n󰌾  Lock"
   ! manu-toggle-enabled suspend-off && options="$options\n󰒲  Suspend"
@@ -638,12 +664,6 @@ go_to_menu() {
   *system*) show_system_menu ;;
   esac
 }
-# Allow user extensions and overrides
-USER_EXTENSIONS="$HOME/.config/manu/extensions/menu.sh"
-[[ -f $USER_EXTENSIONS ]] && source "$USER_EXTENSIONS"
-
-toggle_existing_menu
-
 if [[ -n "$1" ]]; then
   BACK_TO_EXIT=true
   go_to_menu "$1"

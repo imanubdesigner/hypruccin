@@ -46,6 +46,9 @@ mkdir -p "$(dirname "$LOG")"
   # -------------------- XDG user dirs --------------------
   xdg-user-dirs-update
 
+  # -------------------- Hibernation --------------------
+  $MANU_PATH/install/first-run/manu-first-run-hibernation
+
   # -------------------- Snapper + Limine --------------------
   $MANU_PATH/install/first-run/manu-first-run-limine-snapper
 

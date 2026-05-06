@@ -62,7 +62,7 @@ aur_install() {
   present_terminal "echo 'Installing $1 from AUR...'; manu-pkg-aur-add $2"
 }
 open_in_editor() {
-  notify-send -u low "Editing config file" "$1"
+  notify-send "Editing config file" "$1"
   manu-launch-editor "$1"
 }
 aur_install_and_launch() {
@@ -156,7 +156,7 @@ show_transcode_menu() {
 
 show_share_menu() {
   case $(menu "Share" "  Clipboard\n  File \n  Folder") in
-  *Clipboard*) manu-menu-share clipboard ;;
+  *Clipboard*) terminal bash -c "manu-menu-share clipboard" ;;
   *File*) terminal bash -c "manu-menu-share file" ;;
   *Folder*) terminal bash -c "manu-menu-share folder" ;;
   *) back_to show_trigger_menu ;;
@@ -500,15 +500,40 @@ show_update_pacman_menu() {
     *) show_update_menu ;;
   esac
 }
+show_update_pacman_menu() {
+  case $(menu "Pacman" "🟢 Stable\n🟡  RC\n🟠  Edge") in
+    *Stable*) present_terminal "manu-refresh-pacman stable" ;;
+    *RC*) present_terminal "manu-refresh-pacman rc" ;;
+    *Edge*) present_terminal "manu-refresh-pacman edge" ;;
+    *) show_update_menu ;;
+  esac
+}
+show_update_channel_menu() {
+  case $(menu "Update channel" "🟢 Stable\n🟡  RC\n🟠  Edge\n🔴 Dev") in
+    *Stable*) present_terminal "manu-channel-set stable" ;;
+    *RC*) present_terminal "manu-channel-set rc" ;;
+    *Edge*) present_terminal "manu-channel-set edge" ;;
+    *Dev*) present_terminal "manu-channel-set dev" ;;
+    *) show_update_menu ;;
+  esac
+}
+show_update_channel_menu() {
+  case $(menu "Update channel" "🟢 Stable\n🟡 RC\n🟠 Edge\n🔴 Dev") in
+    *Stable*) present_terminal "manu-channel-set stable" ;;
+    *RC*) present_terminal "manu-channel-set rc" ;;
+    *Edge*) present_terminal "manu-channel-set edge" ;;
+    *Dev*) present_terminal "manu-channel-set dev" ;;
+    *) show_update_hypruccin_menu ;;
+  esac
+}
 show_update_process_menu() {
-  case $(menu "Restart" "󰡗  Sudo\n󱓞  Walker\n  Waybar\n  Swayosd\n󱫖  Hypridle\n  Hyprsunset\n󰎟  Mako\n󰞅  XCompose") in
+  case $(menu "Restart" "󰡗  Sudo\n󱓞  Walker\n  Waybar\n  Swayosd\n󱫖  Hypridle\n  Hyprsunset\n󰞅  XCompose") in
     *Sudo*) present_terminal manu-reset-sudo ;;
     *Walker*) manu-restart-walker ;;
     *Waybar*) manu-restart-waybar ;;
     *Swayosd*) manu-restart-swayosd ;;
     *Hypridle*) manu-restart-hypridle ;;
     *Hyprsunset*) manu-restart-hyprsunset ;;
-    *Mako*) manu-restart-mako ;;
     *XCompose*) manu-restart-xcompose ;;
     *) show_update_menu ;;
   esac
@@ -571,19 +596,23 @@ show_setup_system_menu() {
   fi
 
   case $(menu "System" "$options") in
-    *Suspend*)             manu-toggle-suspend ;;
-    *"Enable Hibernate"*)  present_terminal manu-hibernation-setup ;;
-    *"Disable Hibernate"*) present_terminal manu-hibernation-remove ;;
-    *)                     show_setup_menu ;;
+    *Defaults*) open_in_editor ~/.config/uwsm/default ;;
+    *Hyprland*) open_in_editor ~/.config/hypr/hyprland.conf ;;
+    *Hypridle*) open_in_editor ~/.config/hypr/hypridle.conf && manu-restart-hypridle ;;
+    *Hyprsunset*) open_in_editor ~/.config/hypr/hyprsunset.conf && manu-restart-hyprsunset ;;
+    *Swayosd*) open_in_editor ~/.config/swayosd/config.toml && manu-restart-swayosd ;;
+    *Walker*) open_in_editor ~/.config/walker/config.toml && manu-restart-walker ;;
+    *Waybar*) open_in_editor ~/.config/waybar/config.jsonc && manu-restart-waybar ;;
+    *XCompose*) open_in_editor ~/.XCompose && manu-restart-xcompose ;;
+    *) show_setup_menu ;;
   esac
 }
 
 show_setup_config_menu() {
-  case $(menu "Config" "  Defaults\n  Hyprland\n  Hypridle\n  Hyprlock\n  Hyprsunset\n  Swayosd\n󰌧  Walker\n󰍜  Waybar\n󰞅  XCompose") in
+  case $(menu "Setup" "  Defaults\n  Hyprland\n  Hypridle\n  Hyprsunset\n  Swayosd\n󰌧  Walker\n󰍜  Waybar\n󰞅  XCompose") in
     *Defaults*) open_in_editor ~/.config/uwsm/default ;;
     *Hyprland*) open_in_editor ~/.config/hypr/hyprland.conf ;;
-    *Hypridle*) open_in_editor ~/.config/hypr/hypridle.conf && manu-restart-hypridle ;;
-    *Hyprlock*) open_in_editor ~/.config/hypr/hyprlock.conf ;;
+    *Hypridle*) open_in_editor ~/.config/hypridle.conf && manu-restart-hypridle ;;
     *Hyprsunset*) open_in_editor ~/.config/hypr/hyprsunset.conf && manu-restart-hyprsunset ;;
     *Swayosd*) open_in_editor ~/.config/swayosd/config.toml && manu-restart-swayosd ;;
     *Walker*) open_in_editor ~/.config/walker/config.toml && manu-restart-walker ;;
@@ -638,12 +667,6 @@ go_to_menu() {
   *system*) show_system_menu ;;
   esac
 }
-# Allow user extensions and overrides
-USER_EXTENSIONS="$HOME/.config/manu/extensions/menu.sh"
-[[ -f $USER_EXTENSIONS ]] && source "$USER_EXTENSIONS"
-
-toggle_existing_menu
-
 if [[ -n "$1" ]]; then
   BACK_TO_EXIT=true
   go_to_menu "$1"
