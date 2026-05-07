@@ -2,4 +2,8 @@
 
 # manu:summary=Restart the SwayOSD server
 
-manu-restart-app swayosd-server
+if systemctl --user is-enabled --quiet swayosd-server.service; then
+  systemctl --user restart swayosd-server.service
+else
+  omarchy-restart-app swayosd-server
+fi
