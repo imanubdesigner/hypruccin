@@ -23,7 +23,7 @@ echo "   Installing Playwright..."
 manu-npx-install playwright playwright-cli
 
 echo "   Installing PI Coding Agent..."
-manu-npx-install @mariozechner/pi-coding-agent pi
+manu-npx-install @earendil-works/pi-coding-agent pi
 
 echo "   Installing GHUI..."
 manu-npx-install @kitlangton/ghui ghui
