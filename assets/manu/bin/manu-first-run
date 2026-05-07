@@ -3,6 +3,8 @@
 # manu:summary=Finish the installation of Manu with items that can only be done after logging in.
 # manu:requires-sudo=true
 
+# Hibernation is currently disabled. Uncomment (line 52) to enable.
+
 FLAG="$HOME/.local/share/manu/.first-run-done"
 LOG="$HOME/.local/share/manu/first-run.log"
 # Already ran — exit immediately
@@ -47,7 +49,7 @@ mkdir -p "$(dirname "$LOG")"
   xdg-user-dirs-update
 
   # -------------------- Hibernation --------------------
-  $MANU_PATH/install/first-run/manu-first-run-hibernation
+  # $MANU_PATH/install/first-run/manu-first-run-hibernation
 
   # -------------------- Snapper + Limine --------------------
   $MANU_PATH/install/first-run/manu-first-run-limine-snapper
