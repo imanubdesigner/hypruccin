@@ -38,18 +38,23 @@ menu() {
   echo -e "$options" |
     manu-launch-walker --dmenu --width 295 --minheight 1 --maxheight 600 -p "$prompt…" "${args[@]}" 2>/dev/null
 }
+
 terminal() {
   xdg-terminal-exec --app-id=org.manu.terminal "$@"
 }
+
 present_terminal() {
   manu-launch-floating-terminal-with-presentation $1
 }
+
 install() {
   present_terminal "echo 'Installing $1...'; manu-pkg-add $2"
 }
+
 install_and_launch() {
   present_terminal "echo 'Installing $1...'; manu-pkg-add $2 && setsid gtk-launch $3"
 }
+
 install_font() {
   present_terminal "echo 'Installing $1...'; manu-pkg-add $2 && sleep 2 && manu-font-set '$3'"
 }
@@ -61,6 +66,7 @@ install_terminal() {
 aur_install() {
   present_terminal "echo 'Installing $1 from AUR...'; manu-pkg-aur-add $2"
 }
+
 open_in_editor() {
   notify-send -u low "Editing config file" "$1"
   manu-launch-editor "$1"
@@ -68,6 +74,7 @@ open_in_editor() {
 aur_install_and_launch() {
   present_terminal "echo 'Installing $1 from AUR...'; manu-pkg-aur-add $2 && setsid gtk-launch $3"
 }
+
 get_webcam_list() {
   v4l2-ctl --list-devices 2>/dev/null | while IFS= read -r line; do
     if [[ $line != $'\t'* && -n $line ]]; then
@@ -78,6 +85,7 @@ get_webcam_list() {
     fi
   done
 }
+
 show_webcam_select_menu() {
   local devices=$(get_webcam_list)
   local count=$(echo "$devices" | grep -c . 2>/dev/null || echo 0)
@@ -91,6 +99,7 @@ show_webcam_select_menu() {
     menu "Select Webcam" "$devices" | awk '{print $1}'
   fi
 }
+
 show_capture_menu() {
   case $(menu "Capture" "  Screenshot\n  Screenrecord\n󰴑  Text Extraction\n󰃉  Color") in
   *Screenshot*) manu-capture-screenshot ;;
@@ -100,6 +109,7 @@ show_capture_menu() {
   *) back_to show_trigger_menu ;;
   esac
 }
+
 show_screenrecord_menu() {
   manu-capture-screenrecording --stop-recording && exit 0
   case $(menu "Screenrecord" "  With no audio\n  With desktop audio\n  With desktop + microphone audio\n  With desktop + microphone audio + webcam") in
@@ -124,6 +134,7 @@ show_screenrecord_menu() {
     ;;
   esac
 }
+
 show_learn_menu() {
   case $(menu "Learn" "  Hyprland\n  Arch\n  Neovim\n  Bash\n󱣻  Gowall\n󰇥  Yazi\n󰌌  Keybindings") in
   *Hyprland*) manu-launch-webapp "https://wiki.hypr.land/" ;;
@@ -136,6 +147,7 @@ show_learn_menu() {
   *) show_main_menu ;;
   esac
 }
+
 show_trigger_menu() {
   case $(menu "Trigger" "  Capture\n󰧸  Transcode\n  Share\n󰨚  Toggle") in
   *Capture*) show_capture_menu ;;
@@ -162,6 +174,7 @@ show_share_menu() {
   *) back_to show_trigger_menu ;;
   esac
 }
+
 show_toggle_menu() {
   case $(menu "Toggle" "󱄄  Screensaver\n  Nightlight\n󱫖  Idle Lock\n󰂛  Notifications\n󰖯  Top Bar\n󱂬  Workspace Layout\n  Window Gaps\n  1-Window Ratio\n󰍹  Display Scaling\n󰟵  Sudo Passwordless") in
   *Screensaver*) manu-toggle-screensaver ;;
@@ -177,6 +190,7 @@ show_toggle_menu() {
   *) show_trigger_menu ;;
   esac
 }
+
 show_power_profile_menu() {
   local profile
   profile=$(menu "Power Profile" "$(manu-powerprofiles-list)")
@@ -186,6 +200,7 @@ show_power_profile_menu() {
     manu-powerprofiles-set "$profile"
   fi
 }
+
 show_style_menu() {
   case $(menu "Style" "󰸌  Theme\n󰉔  Background\n  Font\n  Hyprland\n󱄄  Screensaver") in
   *Theme*) show_theme_menu ;;
@@ -269,14 +284,14 @@ show_install_browser_menu() {
 
 show_install_service_menu() {
   case $(menu "Install" "  Dropbox\n  Tailscale\n󱇱  NordVPN [AUR]\n󰏖  ONCE\n󰟵  Bitwarden\n  Chromium Account\n󰊢  Git Configuration") in
-    *Dropbox*) present_terminal manu-install-dropbox ;;
-    *Tailscale*) present_terminal manu-install-tailscale ;;
-    *NordVPN*) present_terminal manu-install-nordvpn ;;
-    *ONCE*) present_terminal manu-install-once ;;
-    *Bitwarden*) install_and_launch "Bitwarden" "bitwarden bitwarden-cli" "bitwarden" ;;
-    *Chromium*) present_terminal manu-install-chromium-google-account ;;
-    *Git*) present_terminal manu-install-git-configuration ;;
-    *) show_install_menu ;;
+  *Dropbox*) present_terminal manu-install-dropbox ;;
+  *Tailscale*) present_terminal manu-install-tailscale ;;
+  *NordVPN*) present_terminal manu-install-nordvpn ;;
+  *ONCE*) present_terminal manu-install-once ;;
+  *Bitwarden*) install_and_launch "Bitwarden" "bitwarden bitwarden-cli" "bitwarden" ;;
+  *Chromium*) present_terminal manu-install-chromium-google-account ;;
+  *Git*) present_terminal manu-install-git-configuration ;;
+  *) show_install_menu ;;
   esac
 }
 
@@ -337,6 +352,7 @@ show_install_development_menu() {
   *) show_install_menu ;;
   esac
 }
+
 show_install_javascript_menu() {
   case $(menu "Install" "  Node.js\n  Bun\n  Deno") in
   *Node*) present_terminal "manu-install-dev-env node" ;;
@@ -345,6 +361,7 @@ show_install_javascript_menu() {
   *) show_install_development_menu ;;
   esac
 }
+
 show_install_php_menu() {
   case $(menu "Install" "  PHP\n  Laravel\n  Symfony") in
   *PHP*) present_terminal "manu-install-dev-env php" ;;
@@ -353,6 +370,7 @@ show_install_php_menu() {
   *) show_install_development_menu ;;
   esac
 }
+
 show_install_elixir_menu() {
   case $(menu "Install" "  Elixir\n  Phoenix") in
   *Elixir*) present_terminal "manu-install-dev-env elixir" ;;
@@ -360,6 +378,7 @@ show_install_elixir_menu() {
   *) show_install_development_menu ;;
   esac
 }
+
 show_install_style_menu() {
   case $(menu "Install" "󰸌  Theme\n  Background\n  Font") in
   *Theme*) present_terminal manu-theme-install ;;
@@ -368,6 +387,7 @@ show_install_style_menu() {
   *) show_install_menu ;;
   esac
 }
+
 show_install_font_menu() {
   case $(menu "Install" "  Cascadia Mono\n  Meslo LG Mono\n  Fira Code\n  Victor Code\n  Bitstream Vera Mono\n  Iosevka" "--width 350") in
   *Cascadia*) install_font "Cascadia Mono" "ttf-cascadia-mono-nerd" "CaskaydiaMono Nerd Font" ;;
@@ -456,6 +476,7 @@ show_remove_development_menu() {
   *) show_remove_menu ;;
   esac
 }
+
 show_remove_javascript_menu() {
   case $(menu "Remove" "  Node.js\n  Bun\n  Deno") in
   *Node*) present_terminal "manu-remove-dev-env node" ;;
@@ -464,6 +485,7 @@ show_remove_javascript_menu() {
   *) show_remove_development_menu ;;
   esac
 }
+
 show_remove_php_menu() {
   case $(menu "Remove" "  PHP\n  Laravel\n  Symfony") in
   *PHP*) present_terminal "manu-remove-dev-env php" ;;
@@ -472,6 +494,7 @@ show_remove_php_menu() {
   *) show_remove_development_menu ;;
   esac
 }
+
 show_remove_elixir_menu() {
   case $(menu "Remove" "  Elixir\n  Phoenix") in
   *Elixir*) present_terminal "manu-remove-dev-env elixir" ;;
@@ -479,71 +502,75 @@ show_remove_elixir_menu() {
   *) show_remove_development_menu ;;
   esac
 }
+
 show_update_menu() {
-  case $(menu "Update" "󰣇  Hypruccin\n󰣇  Pacman\n  Firmware\n󰸌  Extra Themes\n󰮢  Process\n󰇅  Hardware\n  Timezone\n  Time") in
-    *Hypruccin*) present_terminal manu-update ;;
-    *Pacman*) show_update_pacman_menu ;;
-    *Firmware*) present_terminal manu-update-firmware ;;
-    *Themes*) present_terminal manu-theme-update ;;
-    *Process*) show_update_process_menu ;;
-    *Hardware*) show_update_hardware_menu ;;
-    *Timezone*) present_terminal manu-tz-select ;;
-    *Time*) present_terminal manu-update-time ;;
-    *) show_main_menu ;;
+  case $(menu "Update" "󰣇  Hypruccin\n󰣇  Pacman\n  Firmware\n󰸌  Extra Themes\n󰮢  Process\n󰇅  Hardware\n  Timezone\n  Time\n  Password") in
+  *Hypruccin*) present_terminal manu-update ;;
+  *Pacman*) show_update_pacman_menu ;;
+  *Firmware*) present_terminal manu-update-firmware ;;
+  *Themes*) present_terminal manu-theme-update ;;
+  *Process*) show_update_process_menu ;;
+  *Hardware*) show_update_hardware_menu ;;
+  *Timezone*) present_terminal manu-tz-select ;;
+  *Time*) present_terminal manu-update-time ;;
+  *Password*) present_terminal passwd ;;
+  *) show_main_menu ;;
   esac
 }
+
 show_update_pacman_menu() {
   case $(menu "Pacman" "🟢 Stable\n🟡 RC\n🟠 Edge") in
-    *Stable*) present_terminal "manu-refresh-pacman stable" ;;
-    *RC*) present_terminal "manu-refresh-pacman rc" ;;
-    *Edge*) present_terminal "manu-refresh-pacman edge" ;;
-    *) show_update_menu ;;
+  *Stable*) present_terminal "manu-refresh-pacman stable" ;;
+  *RC*) present_terminal "manu-refresh-pacman rc" ;;
+  *Edge*) present_terminal "manu-refresh-pacman edge" ;;
+  *) show_update_menu ;;
   esac
 }
+
 show_update_process_menu() {
   case $(menu "Restart" "󰡗  Sudo\n󱓞  Walker\n  Waybar\n  Swayosd\n󱫖  Hypridle\n  Hyprsunset\n󰎟  Mako\n󰞅  XCompose") in
-    *Sudo*) present_terminal manu-reset-sudo ;;
-    *Walker*) manu-restart-walker ;;
-    *Waybar*) manu-restart-waybar ;;
-    *Swayosd*) manu-restart-swayosd ;;
-    *Hypridle*) manu-restart-hypridle ;;
-    *Hyprsunset*) manu-restart-hyprsunset ;;
-    *Mako*) manu-restart-mako ;;
-    *XCompose*) manu-restart-xcompose ;;
-    *) show_update_menu ;;
+  *Sudo*) present_terminal manu-reset-sudo ;;
+  *Walker*) manu-restart-walker ;;
+  *Waybar*) manu-restart-waybar ;;
+  *Swayosd*) manu-restart-swayosd ;;
+  *Hypridle*) manu-restart-hypridle ;;
+  *Hyprsunset*) manu-restart-hyprsunset ;;
+  *Mako*) manu-restart-mako ;;
+  *XCompose*) manu-restart-xcompose ;;
+  *) show_update_menu ;;
   esac
 }
+
 show_update_hardware_menu() {
   case $(menu "Restart" "  Audio\n󱚾  Wi-Fi\n󰂯  Bluetooth") in
-    *Audio*) present_terminal manu-restart-pipewire ;;
-    *Wi-Fi*) present_terminal manu-restart-wifi ;;
-    *Bluetooth*) present_terminal manu-restart-bluetooth ;;
-    *) show_update_menu ;;
+  *Audio*) present_terminal manu-restart-pipewire ;;
+  *Wi-Fi*) present_terminal manu-restart-wifi ;;
+  *Bluetooth*) present_terminal manu-restart-bluetooth ;;
+  *) show_update_menu ;;
   esac
 }
+
 show_setup_menu() {
-  local options="󰵅  Power Profile\n󰱔  DNS\n󰁯  Tools"
-  options="$options\n󰊢  Audio\n󰤪  Wifi\n󰂯  Bluetooth\n󰒲  System Sleep"
-  options="$options\n󰎟  Monitors"
-  [[ -f ~/.config/hypr/bindings.conf ]] && options="$options\n  Keybindings"
-  [[ -f ~/.config/hypr/input.conf ]] && options="$options\n  Input"
-  options="$options\n  Config"
+  local options="󰊢  Audio\n󰤪  Wifi\n󰂯  Bluetooth\n󰵅  Power Profile\n󰒲  System Sleep"
+  [[ -f ~/.config/hypr/modules/bindings/utilities.conf ]] && options="$options\n  Keybindings"
+  [[ -f ~/.config/hypr/modules/input.conf ]] && options="$options\n  Input"
+  options="$options\n󰱔  DNS\n󰁯  Tools\n  Config"
 
   case $(menu "Setup" "$options") in
-    *"Power Profile"*) show_power_profile_menu ;;
-    *DNS*) present_terminal manu-setup-dns ;;
-    *Tools*) show_setup_tools_menu ;;
-    *Audio*) manu-launch-audio ;;
-    *Wifi*) manu-launch-wifi ;;
-    *Bluetooth*) manu-launch-bluetooth ;;
-    *"System Sleep"*) show_setup_system_menu ;;
-    *Monitors*) open_in_editor ~/.config/hypr/monitors.conf ;;
-    *Keybindings*) open_in_editor ~/.config/hypr/bindings.conf ;;
-    *Input*) open_in_editor ~/.config/hypr/input.conf ;;
-    *Config*) show_setup_config_menu ;;
-    *) show_main_menu ;;
+  *Audio*) manu-launch-audio ;;
+  *Wifi*) manu-launch-wifi ;;
+  *Bluetooth*) manu-launch-bluetooth ;;
+  *"Power Profile"*) show_power_profile_menu ;;
+  *"System Sleep"*) show_setup_system_menu ;;
+  *Keybindings*) open_in_editor ~/.config/hypr/modules/bindings/utilities.conf ;;
+  *Input*) open_in_editor ~/.config/hypr/modules/input.conf ;;
+  *DNS*) present_terminal manu-setup-dns ;;
+  *Tools*) show_setup_tools_menu ;;
+  *Config*) show_setup_config_menu ;;
+  *) show_main_menu ;;
   esac
 }
+
 show_setup_tools_menu() {
   case $(menu "Tools" "󰁯  Snapper Backup\n󰏔  Pkg History\n󰦗  Media Downloader\n󱊞  ISO to USB\n󰣌  Image Converter\n  Video Converter") in
   *"Snapper Backup"*) present_terminal manu-snapper-backup ;;
@@ -571,25 +598,25 @@ show_setup_system_menu() {
   fi
 
   case $(menu "System" "$options") in
-    *Suspend*)             manu-toggle-suspend ;;
-    *"Enable Hibernate"*)  present_terminal manu-hibernation-setup ;;
-    *"Disable Hibernate"*) present_terminal manu-hibernation-remove ;;
-    *)                     show_setup_menu ;;
+  *Suspend*) manu-toggle-suspend ;;
+  *"Enable Hibernate"*) present_terminal manu-hibernation-setup ;;
+  *"Disable Hibernate"*) present_terminal manu-hibernation-remove ;;
+  *) show_setup_menu ;;
   esac
 }
 
 show_setup_config_menu() {
   case $(menu "Config" "  Defaults\n  Hyprland\n  Hypridle\n  Hyprlock\n  Hyprsunset\n  Swayosd\n󰌧  Walker\n󰍜  Waybar\n󰞅  XCompose") in
-    *Defaults*) open_in_editor ~/.config/uwsm/default ;;
-    *Hyprland*) open_in_editor ~/.config/hypr/hyprland.conf ;;
-    *Hypridle*) open_in_editor ~/.config/hypr/hypridle.conf && manu-restart-hypridle ;;
-    *Hyprlock*) open_in_editor ~/.config/hypr/hyprlock.conf ;;
-    *Hyprsunset*) open_in_editor ~/.config/hypr/hyprsunset.conf && manu-restart-hyprsunset ;;
-    *Swayosd*) open_in_editor ~/.config/swayosd/config.toml && manu-restart-swayosd ;;
-    *Walker*) open_in_editor ~/.config/walker/config.toml && manu-restart-walker ;;
-    *Waybar*) open_in_editor ~/.config/waybar/config.jsonc && manu-restart-waybar ;;
-    *XCompose*) open_in_editor ~/.XCompose && manu-restart-xcompose ;;
-    *) show_setup_menu ;;
+  *Defaults*) open_in_editor ~/.config/uwsm/default ;;
+  *Hyprland*) open_in_editor ~/.config/hypr/hyprland.conf ;;
+  *Hypridle*) open_in_editor ~/.config/hypr/hypridle.conf && manu-restart-hypridle ;;
+  *Hyprlock*) open_in_editor ~/.config/hypr/hyprlock.conf ;;
+  *Hyprsunset*) open_in_editor ~/.config/hypr/hyprsunset.conf && manu-restart-hyprsunset ;;
+  *Swayosd*) open_in_editor ~/.config/swayosd/config.toml && manu-restart-swayosd ;;
+  *Walker*) open_in_editor ~/.config/walker/config.toml && manu-restart-walker ;;
+  *Waybar*) open_in_editor ~/.config/waybar/config.jsonc && manu-restart-waybar ;;
+  *XCompose*) open_in_editor ~/.XCompose && manu-restart-xcompose ;;
+  *) show_setup_menu ;;
   esac
 }
 
@@ -600,21 +627,24 @@ show_system_menu() {
   options="$options\n󰜉  Restart\n  Shutdown"
 
   case $(menu "System" "$options") in
-    *Screensaver*) manu-launch-screensaver force ;;
-    *Lock*) manu-lock-screen ;;
-    *Suspend*) systemctl suspend ;;
-    *Hibernate*) systemctl hibernate ;;
-    *Restart*) manu-system-reboot ;;
-    *Shutdown*) manu-system-shutdown ;;
-    *) back_to show_main_menu ;;
+  *Screensaver*) manu-launch-screensaver force ;;
+  *Lock*) manu-system-lock ;;
+  *Suspend*) systemctl suspend ;;
+  *Hibernate*) systemctl hibernate ;;
+  *Restart*) manu-system-reboot ;;
+  *Shutdown*) manu-system-shutdown ;;
+  *) back_to show_main_menu ;;
   esac
 }
+
 show_about() {
   manu-launch-about
 }
+
 show_main_menu() {
   go_to_menu "$(menu "󰕰  Go" "󰵆  App\n  Learn\n  Trigger\n  Style\n  Install\n  Remove\n󰚰  Update\n  Setup\n󰋽  About\n  System")"
 }
+
 go_to_menu() {
   case "${1,,}" in
   *app*) walker -p "Launch…" ;;
