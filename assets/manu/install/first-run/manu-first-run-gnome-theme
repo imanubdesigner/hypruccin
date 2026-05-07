@@ -49,6 +49,16 @@ ln -snf ~/.config/manu/current/theme/mako.ini ~/.config/mako/config
 # Default Chromium to follow system appearance ("device") instead of dark
 echo '{"browser":{"theme":{"color_scheme":0,"color_scheme2":0}}}' | sudo tee /usr/lib/chromium/initial_preferences >/dev/null
 
+# -------------------- Enable Bluetooth A2DP autoconnect --------------------
+echo "$(date): Enabling Bluetooth A2DP autoconnect..."
+
+mkdir -p ~/.config/wireplumber/wireplumber.conf.d/
+
+cp $MANU_PATH/default/wireplumber/wireplumber.conf.d/bluetooth-a2dp-autoconnect.conf \
+  ~/.config/wireplumber/wireplumber.conf.d/
+
+echo "$(date): Bluetooth A2DP: file copied successfully"
+
 # -------------------- Disable WiFi and Bluetooth at first boot --------------------
 echo "$(date): Disabling WiFi and Bluetooth..."
 

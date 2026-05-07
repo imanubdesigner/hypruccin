@@ -20,8 +20,8 @@ cursor)
   name="Cursor"
   glyph=""
   ;;
-zed)
-  editor="zed"
+zed | zeditor)
+  editor="zeditor"
   name="Zed"
   glyph=""
   ;;
