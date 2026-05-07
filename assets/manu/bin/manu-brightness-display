@@ -2,7 +2,7 @@
 
 # manu:summary=Adjust brightness on the most likely display device.
 # manu:args=<+N%|N%-|N%|off|on>
-# manu:examples=omarchy brightness display +5% | manu brightness display 5%- | manu brightness display 50% | manu brightness display off | manu brightness display on
+# manu:examples=manu brightness display +5% | manu brightness display 5%- | manu brightness display 50% | manu brightness display off | manu brightness display on
 
 step="${1:-+5%}"
 

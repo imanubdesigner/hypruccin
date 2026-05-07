@@ -2,7 +2,7 @@
 
 # manu:summary=Set the screensaver logo text from an SVG/PNG or the default
 # manu:args=<default|path-to-logo.svg|png> [--width <columns>] [--height <rows>] [--mode <braille|block>] [--threshold <percent>] [--invert] [--stdout]
-# omarchy:examples=manu screensaver logo ~/logo.svg | manu screensaver logo default | manu screensaver logo ~/logo.png --width 80 --mode block --stdout
+# manu:examples=manu screensaver logo ~/logo.svg | manu screensaver logo default | manu screensaver logo ~/logo.png --width 80 --mode block --stdout
 #
 set -o pipefail
 

@@ -784,7 +784,7 @@ show_prefix_help() {
 
   [[ -n $rows ]] || return 1
 
-  echo "${prefix#omarchy } commands:"
+  echo "${prefix#manu } commands:"
   print_command_table "$rows"
 }
 
@@ -1005,7 +1005,7 @@ dispatch_or_help() {
     return 0
   fi
 
-  if show_prefix_help "omarchy ${args[*]}"; then
+  if show_prefix_help "manu ${args[*]}"; then
     return 0
   fi
 

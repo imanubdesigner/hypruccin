@@ -2,7 +2,7 @@
 
 # manu:summary=Install Arch packages if they are missing
 # manu:args=<packages...>
-# omarchy:examples=manu pkg add jq ripgrep
+# manu:examples=manu pkg add jq ripgrep
 # manu:requires-sudo=true
 
 if manu-pkg-missing "$@"; then
