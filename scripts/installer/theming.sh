@@ -39,20 +39,11 @@ run_command "sysctl --system" "Apply sysctl settings" "no"
 run_command "bat cache --build" "Rebuild bat syntax highlighting cache" "no" "no"
 
 # -------------------- Nautilus Python Extensions --------------------
-# Define the extension directory for clarity
 NAUTILUS_PY_DIR="/home/$SUDO_USER/.local/share/nautilus-python/extensions"
-
-# Create the directory (including parents if they don't exist)
 run_command "mkdir -p $NAUTILUS_PY_DIR" "Create Nautilus Python extensions directory" "no" "no"
-
-# Copy the LocalSend extension from the assets folder
-run_command "cp $BASE_DIR/assets/manu/default/nautilus-python/extensions/localsend.py $NAUTILUS_PY_DIR/" \
-  "Copy LocalSend Nautilus extension" "no" "no"
-
-# Set correct ownership for the entire nautilus-python directory to the real user ($SUDO_USER)
-# This ensures the user can run the extension without permission issues.
-run_command "chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.local/share/nautilus-python" \
-  "Set ownership for Nautilus Python extensions" "no" "no"
+run_command "cp -r $BASE_DIR/assets/manu/default/nautilus-python/extensions/. $NAUTILUS_PY_DIR/" "Copy Nautilus Python extensions" "no" "no"
+run_command "chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.local/share/nautilus-python" "Set ownership for Nautilus Python extensions" "no" "no"
+run_command "nautilus -q" "Restart Nautilus" "no" "no"
 
 # -------------------- Fast Shutdown Configuration --------------------
 run_command "mkdir -p /etc/systemd/system.conf.d" "Create system.conf.d directory" "no"

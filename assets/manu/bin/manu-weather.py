@@ -7,10 +7,10 @@
 import time
 import requests
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
-# === WEATHER ICONS (Nerd Font) ===
-icon_map = {
+# === WEATHER ICONS (Nerd Font) - DAY ===
+day_icon_map = {
     "Sunny": "󰖙",
     "Clear": "󰖙",
     "Partly cloudy": "󰖔",
@@ -28,14 +28,134 @@ icon_map = {
     "default": "",
 }
 
+# === WEATHER ICONS (Nerd Font) - NIGHT ===
+night_icon_map = {
+    "Sunny": "󰖨",
+    "Clear": "󰖨",
+    "Partly cloudy": "󰖕",
+    "Cloudy": "",
+    "Overcast": "",
+    "Mist": "",
+    "Fog": "",
+    "Light rain": "",
+    "Moderate rain": "",
+    "Heavy rain": "",
+    "Light snow": "",
+    "Moderate snow": "",
+    "Heavy snow": "",
+    "Thunderstorm": "",
+}
+
+# === HELPER FUNCTIONS ===
+def parse_wttr_datetime(s):
+    """Parse wttr.in datetime: '2024-01-15 12:34 PM'"""
+    return datetime.strptime(s.strip(), "%Y-%m-%d %I:%M %p")
+
+def parse_12h_on_date(time_str, dt_date):
+    """Parse 12h time like '05:42 AM' combined with a specific date"""
+    t = datetime.strptime(time_str.strip(), "%I:%M %p").time()
+    return datetime.combine(dt_date, t)
+
+def is_day_now(local_dt, sunrise_dt, sunset_dt):
+    """Check if local_dt is between sunrise and sunset"""
+    t = local_dt.time()
+    sr = sunrise_dt.time()
+    ss = sunset_dt.time()
+    return sr <= t <= ss
+
+def next_sunrise_sunset(local_dt, sunrise_dt, sunset_dt):
+    """Return (event_name, event_datetime) for the next sunrise or sunset"""
+    today = local_dt.date()
+    sr = sunrise_dt.replace(year=today.year, month=today.month, day=today.day)
+    ss = sunset_dt.replace(year=today.year, month=today.month, day=today.day)
+
+    if local_dt < sr:
+        return "sunrise", sr
+    elif local_dt < ss:
+        return "sunset", ss
+    else:
+        tomorrow = today + timedelta(days=1)
+        sr_tomorrow = sunrise_dt.replace(year=tomorrow.year, month=tomorrow.month, day=tomorrow.day)
+        return "sunrise", sr_tomorrow
+
+def countdown_str(target_dt, now_dt):
+    """Human-readable time delta like '2h 15m'"""
+    diff = target_dt - now_dt
+    total = int(diff.total_seconds())
+    if total < 0:
+        total = 0
+    h = total // 3600
+    m = (total % 3600) // 60
+    if h > 0:
+        return f"{h}h {m}m"
+    return f"{m}m"
+
+def clothing_suggestion(temp_c, desc, rain_pct):
+    """Suggest what to wear"""
+    temp = float(temp_c)
+    parts = []
+    if temp <= 5:
+        parts.append("🧥 Heavy coat")
+    elif temp <= 15:
+        parts.append("🧥 Jacket")
+    elif temp <= 20:
+        parts.append("👔 Light jacket")
+    elif temp <= 25:
+        parts.append("👕 T-shirt")
+    else:
+        parts.append("🩳 Light clothes")
+    if "rain" in desc.lower() or rain_pct > 30:
+        parts.append("☔ Umbrella")
+    if "snow" in desc.lower():
+        parts.append("🧤 Warm gear")
+    if temp >= 22 and "rain" not in desc.lower():
+        parts.append("🕶️ Sunglasses")
+    return "  |  ".join(parts)
+
+def uv_color(uv):
+    """Pango markup with color for UV index"""
+    try:
+        v = int(uv)
+    except (ValueError, TypeError):
+        return uv
+    if v <= 2:
+        c = "#4CAF50"
+    elif v <= 5:
+        c = "#FFC107"
+    elif v <= 7:
+        c = "#FF9800"
+    elif v <= 10:
+        c = "#F44336"
+    else:
+        c = "#9C27B0"
+    return f'<span foreground="{c}">{v}</span>'
+
+def day_progress(sunrise_dt, sunset_dt, now_dt):
+    """Text progress bar of day elapsed"""
+    today = now_dt.date()
+    sr = sunrise_dt.replace(year=today.year, month=today.month, day=today.day)
+    ss = sunset_dt.replace(year=today.year, month=today.month, day=today.day)
+
+    if now_dt < sr:
+        return "[░░░░░░░░░░] 0%  (pre-dawn)"
+    if now_dt > ss:
+        return "[▓▓▓▓▓▓▓▓▓▓] 100%  (night)"
+
+    total = (ss - sr).total_seconds()
+    elapsed = (now_dt - sr).total_seconds()
+    pct = min(100, max(0, int(elapsed / total * 100)))
+    filled = pct // 10
+    bar = "▓" * filled + "░" * (10 - filled)
+    return f"[{bar}] {pct}%"
+
 # === GET LOCATION WITH RETRIES ===
 def get_location(retries=3, delay=2):
     for _ in range(retries):
         try:
-            response = requests.get("https://ipinfo.io", timeout=5)
-            data = response.json()
-            loc = data["loc"].split(",")
-            return float(loc[0]), float(loc[1])
+            resp = requests.get("https://ipinfo.io", timeout=5)
+            data = resp.json()
+            lat, lon = data["loc"].split(",")
+            return float(lat), float(lon)
         except Exception:
             time.sleep(delay)
     raise RuntimeError("Failed to get location after retries")
@@ -44,13 +164,12 @@ def get_location(retries=3, delay=2):
 try:
     lat, lon = get_location()
 
-    # Get weather data from wttr.in (JSON format)
     url = f"https://wttr.in/{lat},{lon}?format=j1&lang=en"
     resp = requests.get(url, timeout=10, headers={"User-Agent": "curl"})
     data = resp.json()
     alerts = data.get("alerts", [])
     current = data["current_condition"][0]
-    weather = data["weather"]  # 3-day forecast
+    weather = data["weather"]
 
     # Current conditions
     temp = f"{current['temp_C']}°"
@@ -62,15 +181,35 @@ try:
     uv_index = current.get("uvIndex", "")
     desc = current["weatherDesc"][0]["value"]
 
-    # Icon
-    icon = icon_map.get(desc, icon_map["default"])
+    # Parse local observation time from wttr.in (correct timezone, not system clock)
+    local_dt = parse_wttr_datetime(current["localObsDateTime"])
 
     # Today's forecast
     today = weather[0]
     max_c = today["maxtempC"]
     min_c = today["mintempC"]
-    sunrise = today["astronomy"][0]["sunrise"]
-    sunset = today["astronomy"][0]["sunset"]
+    sunrise_str = today["astronomy"][0]["sunrise"]
+    sunset_str = today["astronomy"][0]["sunset"]
+
+    # Use date from wttr.in (not system clock - fixes dual-boot issue)
+    sunrise_dt = parse_12h_on_date(sunrise_str, local_dt.date())
+    sunset_dt = parse_12h_on_date(sunset_str, local_dt.date())
+
+    # Determine day/night
+    is_day = is_day_now(local_dt, sunrise_dt, sunset_dt)
+
+    # Select icon based on day/night
+    if not is_day and desc in night_icon_map:
+        icon = night_icon_map[desc]
+    else:
+        icon = day_icon_map.get(desc, day_icon_map["default"])
+
+    # Tomorrow forecast
+    tomorrow = weather[1]
+    tomorrow_desc = tomorrow["hourly"][4]["weatherDesc"][0]["value"]
+    tomorrow_max = tomorrow["maxtempC"]
+    tomorrow_min = tomorrow["mintempC"]
+    tomorrow_icon = day_icon_map.get(tomorrow_desc, day_icon_map["default"])
 
     # Hourly rain forecast (next 24h)
     rain_hours = []
@@ -80,7 +219,6 @@ try:
         chance = int(hour_data["chanceofrain"])
         rain_hours.append((hour_12, chance))
 
-    # Filter significant rain
     significant_rain = [(h, p) for h, p in rain_hours if p >= 20]
     if rain_hours:
         max_chance = max(p for _, p in rain_hours)
@@ -98,17 +236,9 @@ try:
         avg_chance = 0
         trend = "dry"
 
-    # Show rain section only if there's actual rain
     show_rain = max_chance > 20
 
-    # Tomorrow forecast
-    tomorrow = weather[1]
-    tomorrow_desc = tomorrow["hourly"][4]["weatherDesc"][0]["value"]  # ~noon
-    tomorrow_max = tomorrow["maxtempC"]
-    tomorrow_min = tomorrow["mintempC"]
-    tomorrow_icon = icon_map.get(tomorrow_desc, icon_map["default"])
-
-    # Moon phase (Unicode emojis - better rendering)
+    # Moon phase
     moon_phase = today["astronomy"][0]["moon_phase"]
     moon_icons = {
         "New Moon": "🌑", "Waxing Crescent": "🌒", "First Quarter": "🌓",
@@ -121,11 +251,28 @@ try:
     pressure = current.get("pressure", "")
     dew_point = current.get("DewPointC", "")
 
+    # === NEW FEATURES ===
+    # Day progress bar
+    progress = day_progress(sunrise_dt, sunset_dt, local_dt)
+
+    # Countdown to next sunrise/sunset
+    event_name, event_dt = next_sunrise_sunset(local_dt, sunrise_dt, sunset_dt)
+    if event_name == "sunrise":
+        countdown = f"🌅  Sunrise in {countdown_str(event_dt, local_dt)}"
+    else:
+        countdown = f"🌇  Sunset in {countdown_str(event_dt, local_dt)}"
+
+    # Clothing suggestion
+    clothing = clothing_suggestion(current['temp_C'], desc, max_chance)
+
+    # UV with color
+    uv_display = uv_color(uv_index) if uv_index else ""
+
     # Build tooltip
     lines = [
         f"<span size='xx-large' weight='bold'>{temp}</span>",
         "",
-        f"<small>Feels like {feels_like}c</small>",
+        f"<small>Feels like {feels_like}</small>",
         f"<big>{icon}</big>  <b>{desc}</b>",
         "",
         "<b>Today</b>",
@@ -142,9 +289,20 @@ try:
     if dew_point:
         lines.append(f"<tt>  Dew {dew_point}°C</tt>")
     if uv_index:
-        lines.append(f"<tt>  UV  {uv_index}</tt>")
-    lines.append(f"<tt>  {sunrise}    {sunset}</tt>")
+        lines.append(f"<tt>  UV  {uv_display}</tt>")
+
+    # Day progress & sunrise/sunset
+    lines.append("")
+    lines.append("<b>🌅 Day Progress</b>")
+    lines.append(progress)
+    lines.append(countdown)
+    lines.append(f"<tt>  {sunrise_str}    {sunset_str}</tt>")
     lines.append(f"<tt>{moon_icon}  {moon_phase}</tt>")
+
+    # Clothing suggestion
+    lines.append("")
+    lines.append("<b>👔 What to wear</b>")
+    lines.append(clothing)
 
     # Tomorrow preview
     lines.append("")
@@ -165,7 +323,7 @@ try:
             if alert_expires:
                 lines.append(f"<tt>   Expires: {alert_expires}</tt>")
 
-    # Rain forecast - only if significant rain expected
+    # Rain forecast
     if show_rain:
         lines.append("")
         lines.append(f"<big> </big> Rain: {trend}")
@@ -174,6 +332,7 @@ try:
         for hour, pct in significant_rain[:8]:
             bar = "▇" * (pct // 10) + "░" * (10 - pct // 10)
             lines.append(f"  {hour:>5}  {bar} {pct}%")
+
     tooltip = "\n".join(lines)
 
     # Output for Waybar
