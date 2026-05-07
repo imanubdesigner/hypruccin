@@ -6,18 +6,31 @@
 
 LOG="$HOME/.local/share/manu/first-run.log"
 echo "$(date): Starting NPX wrapper installation..."
+
 echo "   Installing Codex..."
 manu-npx-install @openai/codex codex
+
 echo "   Installing Gemini CLI..."
 manu-npx-install @google/gemini-cli gemini
+
 echo "   Installing GitHub Copilot..."
 manu-npx-install @github/copilot copilot
+
 echo "   Installing OpenCode..."
 manu-npx-install opencode-ai opencode
+
 echo "   Installing Playwright..."
 manu-npx-install playwright playwright-cli
+
 echo "   Installing PI Coding Agent..."
 manu-npx-install @mariozechner/pi-coding-agent pi
+
 echo "   Installing GHUI..."
 manu-npx-install @kitlangton/ghui ghui
+
+# Theming
+echo "   Installing Pi Theme..."
+mkdir -p ~/.pi/agent/extensions
+cp "$MANU_PATH/default/pi/agent/extensions/manu-system-theme.ts" ~/.pi/agent/extensions/
+
 echo "$(date): NPX wrapper installation finished."
