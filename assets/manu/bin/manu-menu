@@ -554,6 +554,7 @@ show_setup_menu() {
   local options="󰊢  Audio\n󰤪  Wifi\n󰂯  Bluetooth\n󰵅  Power Profile\n󰒲  System Sleep"
   [[ -f ~/.config/hypr/modules/bindings/utilities.conf ]] && options="$options\n  Keybindings"
   [[ -f ~/.config/hypr/modules/input.conf ]] && options="$options\n  Input"
+  [[ -f ~/.config/hypr/modules/decorations.conf ]] && options="$options\n  Decorations"
   options="$options\n󰱔  DNS\n󰁯  Tools\n  Config"
 
   case $(menu "Setup" "$options") in
@@ -564,6 +565,7 @@ show_setup_menu() {
   *"System Sleep"*) show_setup_system_menu ;;
   *Keybindings*) open_in_editor ~/.config/hypr/modules/bindings/utilities.conf ;;
   *Input*) open_in_editor ~/.config/hypr/modules/input.conf ;;
+  *Decorations*) open_in_editor ~/.config/hypr/modules/decorations.conf ;;
   *DNS*) present_terminal manu-setup-dns ;;
   *Tools*) show_setup_tools_menu ;;
   *Config*) show_setup_config_menu ;;
