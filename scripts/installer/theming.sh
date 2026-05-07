@@ -27,6 +27,12 @@ run_command "cp -r $BASE_DIR/assets/toggles $MANU_STATE_DIR/" \
 run_command "chown -R $SUDO_USER:$SUDO_USER $MANU_STATE_DIR" \
   "Set ownership for manu state directory" "no" "no"
 
+# -------------------- Enable Bluetooth A2DP autoconnect --------------------
+WIREPLUMBER_CONF_DIR="/home/$SUDO_USER/.config/wireplumber/wireplumber.conf.d"
+run_command "mkdir -p $WIREPLUMBER_CONF_DIR" "Create WirePlumber config directory" "no" "no"
+run_command "cp $BASE_DIR/assets/manu/default/wireplumber/wireplumber.conf.d/bluetooth-a2dp-autoconnect.conf $WIREPLUMBER_CONF_DIR/" "Copy WirePlumber Bluetooth A2DP autoconnect config" "no" "no"
+run_command "chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.config/wireplumber" "Set ownership for WirePlumber config" "no" "no"
+
 # -------------------- Zram Configuration --------------------
 run_command "cp $BASE_DIR/assets/systemd/zram-generator.conf /etc/systemd/zram-generator.conf" "Copy zram-generator configuration" "no"
 run_command "systemctl enable systemd-zram-setup@zram0.service" "Enable zram swap" "no"
