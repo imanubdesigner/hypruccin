@@ -13,8 +13,8 @@ italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
 size = 11
 
 [window]
-padding.x = 25
-padding.y = 25
+padding.x = 14
+padding.y = 14
 decorations = "None"
 
 [keyboard]

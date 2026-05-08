@@ -49,7 +49,6 @@ NAUTILUS_PY_DIR="/home/$SUDO_USER/.local/share/nautilus-python/extensions"
 run_command "mkdir -p $NAUTILUS_PY_DIR" "Create Nautilus Python extensions directory" "no" "no"
 run_command "cp -r $BASE_DIR/assets/manu/default/nautilus-python/extensions/. $NAUTILUS_PY_DIR/" "Copy Nautilus Python extensions" "no" "no"
 run_command "chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.local/share/nautilus-python" "Set ownership for Nautilus Python extensions" "no" "no"
-run_command "nautilus -q" "Restart Nautilus" "no" "no"
 
 # -------------------- Fast Shutdown Configuration --------------------
 run_command "mkdir -p /etc/systemd/system.conf.d" "Create system.conf.d directory" "no"

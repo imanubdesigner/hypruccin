@@ -36,7 +36,7 @@ menu() {
     fi
   fi
   echo -e "$options" |
-    manu-launch-walker --dmenu --width 295 --minheight 1 --maxheight 600 -p "$prompt…" "${args[@]}" 2>/dev/null
+    manu-launch-walker --dmenu --width 295 --minheight 1 --maxheight 630 -p "$prompt…" "${args[@]}" 2>/dev/null
 }
 
 terminal() {
