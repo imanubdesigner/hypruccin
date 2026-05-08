@@ -24,8 +24,8 @@ mouse-scroll-multiplier = 3
 mouse-hide-while-typing = true
 
 # Window Style
-window-padding-x = 25
-window-padding-y = 25
+window-padding-x = 14
+window-padding-y = 14
 window-padding-balance = true
 window-padding-color = background
 confirm-close-surface=false
