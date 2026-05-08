@@ -4,9 +4,11 @@
 # manu:args=<theme-dir>
 
 set -e
+
 THEME_SOURCE="${1:-}"
 COLORS_OUTPUT="$THEME_SOURCE/colors.toml"
 ALACRITTY_FILE="$THEME_SOURCE/alacritty.toml"
+
 if [[ -z $THEME_SOURCE ]]; then
   echo "Usage: manu-theme-colors-from-alacritty <theme-dir>" >&2
   exit 1
@@ -21,6 +23,7 @@ fi
 if [[ ! -f $ALACRITTY_FILE ]]; then
   exit 0
 fi
+
 normalize_hex() {
   local color="$1"
   [[ -z $color ]] && return
@@ -30,6 +33,7 @@ normalize_hex() {
     printf "#%s\n" "${color,,}"
   fi
 }
+
 extract_color_in_section() {
   local section="$1"
   local key="$2"
@@ -39,40 +43,51 @@ extract_color_in_section() {
       gsub(/^[ \t]+|[ \t]+$/, "", value)
       return value
     }
+
     function strip_comment(value,    i, ch, out, in_single, in_double, prev) {
       out = ""
       in_single = 0
       in_double = 0
       prev = ""
+
       for (i = 1; i <= length(value); i++) {
         ch = substr(value, i, 1)
+
         if (ch == "\"" && !in_single && prev != "\\") {
           in_double = !in_double
         } else if (ch == "'\''" && !in_double) {
           in_single = !in_single
         }
+
         if (ch == "#" && !in_single && !in_double) {
           break
         }
+
         out = out ch
         prev = ch
       }
+
       gsub(/[ \t]+$/, "", out)
       return out
     }
+
     /^[ \t]*\[/ {
       in_section = ($0 ~ "^[ \\t]*\\[" section "\\][ \\t]*$")
       next
     }
+
     in_section {
       line = $0
       line = strip_comment(line)
+
       split_pos = index(line, "=")
       if (split_pos == 0) {
         next
       }
+
       current_key = trim(substr(line, 1, split_pos - 1))
       current_value = trim(substr(line, split_pos + 1))
+
       if (current_key == key) {
         gsub(/["'\''#]/, "", current_value)
         sub(/^0[xX]/, "", current_value)
@@ -83,11 +98,14 @@ extract_color_in_section() {
       }
     }
   ' "$ALACRITTY_FILE")
+
   if [[ -n $color_hex && $color_hex =~ ^[0-9a-fA-F]{6}$ ]]; then
     normalize_hex "$color_hex"
   fi
+
   return 0
 }
+
 names=(black red green yellow blue magenta cyan white)
 
 # Extract normal colors (color0-7)
@@ -97,6 +115,7 @@ for i in {0..7}; do
   if [[ -z $val ]]; then
     val=$(extract_color_in_section "colors" "normal.$name")
   fi
+
   printf -v "color$i" "%s" "$val"
 done
 
@@ -113,35 +132,43 @@ for i in {0..7}; do
   normal="color$i"
   bright="color$((i + 8))"
   name="${names[$i]}"
+
   val=$(extract_color_in_section "colors.bright" "$name")
   if [[ -z $val ]]; then
     val=$(extract_color_in_section "colors" "bright.$name")
   fi
+
   printf -v "$bright" "%s" "${val:-${!normal}}"
 done
 
 # Extract primary colors
 background=$(extract_color_in_section "colors.primary" "background")
 foreground=$(extract_color_in_section "colors.primary" "foreground")
+
 if [[ -z $background ]]; then
   background=$(extract_color_in_section "colors" "primary.background")
 fi
+
 if [[ -z $foreground ]]; then
   foreground=$(extract_color_in_section "colors" "primary.foreground")
 fi
 
 # Extract cursor color (from [colors.cursor] section)
 cursor=$(extract_color_in_section "colors.cursor" "cursor")
+
 if [[ -z $cursor ]]; then
   cursor=$(extract_color_in_section "colors" "cursor.cursor")
 fi
 
 # Extract selection colors
 selection_background=$(extract_color_in_section "colors.selection" "background")
+
 if [[ -z $selection_background ]]; then
   selection_background=$(extract_color_in_section "colors" "selection.background")
 fi
+
 selection_foreground=$(extract_color_in_section "colors.selection" "text")
+
 if [[ -z $selection_foreground ]]; then
   selection_foreground=$(extract_color_in_section "colors" "selection.text")
 fi
@@ -153,14 +180,17 @@ cursor=${cursor:-$foreground}
 selection_background=${selection_background:-$foreground}
 selection_foreground=${selection_foreground:-$background}
 accent=$color4
+
 mkdir -p "$THEME_SOURCE"
-cat >"$COLORS_OUTPUT" <<EOF
+
+cat > "$COLORS_OUTPUT" <<EOF
 accent = "$accent"
 cursor = "$cursor"
 foreground = "$foreground"
 background = "$background"
 selection_foreground = "$selection_foreground"
 selection_background = "$selection_background"
+
 color0 = "$color0"
 color1 = "$color1"
 color2 = "$color2"

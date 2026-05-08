@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# manu:summary=Generate themed config files from Omarchy templates
-# manu:hidden=true
+# manu:summary=Generate themed config files from Manu templates
 
 TEMPLATES_DIR="$MANU_PATH/default/themed"
 USER_TEMPLATES_DIR="$HOME/.config/manu/themed"

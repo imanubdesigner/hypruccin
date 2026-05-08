@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# manu:summary=Sync Omarchy theme to all Obsidian vaults
-# manu:hidden=true
+# manu:summary=Sync Manu theme to all Obsidian vaults
 
 CURRENT_THEME_DIR="$HOME/.config/manu/current/theme"
 
@@ -20,7 +19,7 @@ jq -r '.vaults | values[].path' ~/.config/obsidian/obsidian.json 2>/dev/null | w
   "minAppVersion": "0.16.0",
   "description": "Automatically syncs with your current Manu system theme colors and fonts",
   "author": "Manu",
-  "authorUrl": "https://github.com/imanubdesigner/"
+  "authorUrl": "https://manu.org"
 }
 EOF
 

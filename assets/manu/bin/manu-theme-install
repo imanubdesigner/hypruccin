@@ -2,18 +2,20 @@
 
 # manu:summary=Install a theme from a git repository
 # manu:args=[git-repo-url]
-# manu:examples=manu theme install https://github.com/example/omarchy-example-theme.git
-# manu:examples=manu theme install git@github.com:example/omarchy-example-theme.git
+# manu:examples=manu theme install https://github.com/example/manu-example-theme.git
+# manu:examples=manu theme install git@github.com:example/manu-example-theme.git
 
 if [[ -z $1 ]]; then
-  echo -e "\e[32m󰸌 Install a new theme from a git repo\n\e[0m"
+  echo -e "\e[32mSee https://manuals.omamix.org/2/the-manu-manual/90/extra-themes\n\e[0m"
   REPO_URL=$(gum input --placeholder="Git repo URL (https or git@host:org/repo.git)" --header="")
 else
   REPO_URL="$1"
 fi
+
 if [[ -z $REPO_URL ]]; then
   exit 1
 fi
+
 THEMES_DIR="$HOME/.config/manu/themes"
 
 # Strip user@host: prefix from scp-style SSH URLs so basename sees just the path

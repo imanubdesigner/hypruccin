@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# manu:summary=Apply an Omarchy theme
+# manu:summary=Apply an Manu theme
 # manu:args=<theme-name>
 # manu:examples=manu theme list | manu theme set "Tokyo Night"
 
@@ -8,11 +8,14 @@ if [[ -z $1 ]]; then
   echo "Usage: manu-theme-set <theme-name>"
   exit 1
 fi
+
 CURRENT_THEME_PATH="$HOME/.config/manu/current/theme"
 NEXT_THEME_PATH="$HOME/.config/manu/current/next-theme"
 USER_THEMES_PATH="$HOME/.config/manu/themes"
 MANU_THEMES_PATH="$MANU_PATH/themes"
+
 THEME_NAME=$(echo "$1" | sed -E 's/<[^>]+>//g' | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+
 if [[ ! -d $MANU_THEMES_PATH/$THEME_NAME ]] && [[ ! -d $USER_THEMES_PATH/$THEME_NAME ]]; then
   echo "Theme '$THEME_NAME' does not exist"
   exit 1
@@ -38,16 +41,11 @@ manu-theme-set-templates
 rm -rf "$CURRENT_THEME_PATH"
 mv "$NEXT_THEME_PATH" "$CURRENT_THEME_PATH"
 
-# Link neovim theme as lazy plugin so lazy detects config change and hot-reloads
-ln -sf "$HOME/.config/manu/current/theme/neovim.lua" "$HOME/.config/nvim/lua/plugins/theme.lua"
-
 # Store theme name for reference
 echo "$THEME_NAME" >"$HOME/.config/manu/current/theme.name"
 
 # Change background with theme
-if [[ $MANU_THEME_SKIP_BACKGROUND != "1" ]]; then
-  manu-theme-bg-next
-fi
+manu-theme-bg-next
 
 # Restart components to apply new theme
 if pgrep -x waybar >/dev/null; then
@@ -59,13 +57,14 @@ manu-restart-hyprctl
 manu-restart-btop
 manu-restart-opencode
 manu-restart-mako
+manu-restart-helix
 
 # Change app-specific themes
-manu-theme-set-foot
 manu-theme-set-gnome
 manu-theme-set-browser
 manu-theme-set-vscode
 manu-theme-set-obsidian
+manu-theme-set-keyboard
 
 # Call hook on theme set
-manu-hook theme-set "$THEME_NAME" >/dev/null
+manu-hook theme-set "$THEME_NAME"

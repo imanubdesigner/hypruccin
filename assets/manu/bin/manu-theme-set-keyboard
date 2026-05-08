@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# manu:summary=Apply the current theme keyboard color to supported keyboards
+
+manu-theme-set-keyboard-asus-rog
+manu-theme-set-keyboard-f16
