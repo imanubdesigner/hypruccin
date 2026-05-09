@@ -51,6 +51,9 @@ mkdir -p "$(dirname "$LOG")"
   # -------------------- Hibernation --------------------
   # $MANU_PATH/install/first-run/manu-first-run-hibernation
 
+  # -------------------- Install sddm --------------------
+  $MANU_PATH/install/first-run/manu-first-run-sddm
+
   # -------------------- Snapper + Limine --------------------
   $MANU_PATH/install/first-run/manu-first-run-limine-snapper
 

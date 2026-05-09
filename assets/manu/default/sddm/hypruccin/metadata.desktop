@@ -1,0 +1,6 @@
+[SddmGreeterTheme]
+Name=Hypruccin
+Description=Minimal terminal-style login theme matching the Limine bootloader aesthetic
+Author=Hypruccin
+Type=sddm-theme
+Version=1.0

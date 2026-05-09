@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# manu:summary=Refresh the SDDM theme from default
+# manu:requires-sudo=true
+
+# Install SDDM package if not already present
+manu-pkg-add sddm
+
+# Remove tty1 autologin (SDDM now handles session startup)
+sudo rm -f /etc/systemd/system/getty@tty1.service.d/override.conf
+sudo rmdir /etc/systemd/system/getty@tty1.service.d 2>/dev/null || true
+rm -f "$HOME/.zprofile"
+
+# Deploy SDDM theme
+sudo rm -rf /usr/share/sddm/themes/hypruccin
+sudo cp -r "$MANU_PATH/default/sddm/hypruccin" /usr/share/sddm/themes/hypruccin
