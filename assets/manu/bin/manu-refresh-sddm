@@ -4,7 +4,7 @@
 # manu:requires-sudo=true
 
 # Install SDDM package if not already present
-manu-pkg-add sddm
+sudo pacman -S --needed sddm
 
 # Remove tty1 autologin (SDDM now handles session startup)
 sudo rm -f /etc/systemd/system/getty@tty1.service.d/override.conf
