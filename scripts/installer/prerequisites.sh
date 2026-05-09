@@ -55,6 +55,9 @@ run_command "pacman -S --needed --noconfirm adw-gtk-theme alacritty alsa-firmwar
 # -------------------- Configuration Files --------------------
 run_command "cp -r $BASE_DIR/configs/* /home/$SUDO_USER/.config/ && chown -R $SUDO_USER:$SUDO_USER /home/$SUDO_USER/.config" "Copy all config folders" "no" "no"
 
+# -------------------- udev Rules --------------------
+run_command "cp -r $BASE_DIR/assets/manu/default/udev/rules.d/. /etc/udev/rules.d/" "Copy udev rules" "no"
+
 # -------------------- Yazi: plugin "bat" --------------------
 run_command "mkdir -p /home/$SUDO_USER/.config/yazi/plugins" \
   "Create Yazi plugins dir" "yes" "no"
