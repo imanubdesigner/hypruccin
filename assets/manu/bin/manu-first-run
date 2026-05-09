@@ -16,49 +16,55 @@ mkdir -p "$(dirname "$LOG")"
   echo "$(date): First run started"
 
   # -------------------- User-Dirs --------------------
-  $MANU_PATH/install/first-run/manu-first-run-user-dirs
+  $MANU_PATH/install/first-run/manu-first-run-user-dirs.sh
 
   # -------------------- Firewall --------------------
-  $MANU_PATH/install/first-run/manu-first-run-firewall
+  $MANU_PATH/install/first-run/manu-first-run-firewall.sh
 
   # -------------------- Elephant --------------------
-  $MANU_PATH/install/first-run/manu-first-run-elephant
+  $MANU_PATH/install/first-run/manu-first-run-elephant.sh
+
+  # -------------------- GPG --------------------
+  $MANU_PATH/install/first-run/manu-first-run-gpg.sh
+
+  # -------------------- Default Keyring ------------------
+  $MANU_PATH/install/first-run/manu-first-run-default-keyring.sh
 
   # -------------------- Icons --------------------
-  $MANU_PATH/install/first-run/manu-first-run-icons
+  $MANU_PATH/install/first-run/manu-first-run-icons.sh
 
   # -------------------- Webapps --------------------
-  $MANU_PATH/install/first-run/manu-first-run-webapps
+  $MANU_PATH/install/first-run/manu-first-run-webapps.sh
 
   # -------------------- TUI Applications --------------------
-  $MANU_PATH/install/first-run/manu-first-run-tui
+  $MANU_PATH/install/first-run/manu-first-run-tui.sh
 
   # -------------------- NPX Wrapper Scripts --------------------
-  $MANU_PATH/install/first-run/manu-first-run-npx
+  $MANU_PATH/install/first-run/manu-first-run-npx.sh
 
   # -------------------- GNOME / GTK Theme --------------------
-  $MANU_PATH/install/first-run/manu-first-run-gnome-theme
+  $MANU_PATH/install/first-run/manu-first-run-gnome-theme.sh
 
   # -------------------- Mise Configuration --------------------
-  $MANU_PATH/install/first-run/manu-first-run-mise
+  $MANU_PATH/install/first-run/manu-first-run-mise.sh
 
   # -------------------- ZSH Configuration --------------------
-  $MANU_PATH/install/first-run/manu-first-run-zsh
+  $MANU_PATH/install/first-run/manu-first-run-zsh.sh
 
   # -------------------- XDG user dirs --------------------
   xdg-user-dirs-update
 
   # -------------------- Hibernation --------------------
-  # $MANU_PATH/install/first-run/manu-first-run-hibernation
+  # $MANU_PATH/install/first-run/manu-first-run-hibernation.sh
 
   # -------------------- Install sddm --------------------
-  $MANU_PATH/install/first-run/manu-first-run-sddm
+  $MANU_PATH/install/first-run/manu-first-run-sddm.sh
 
   # -------------------- Snapper + Limine --------------------
-  $MANU_PATH/install/first-run/manu-first-run-limine-snapper
+  $MANU_PATH/install/first-run/manu-first-run-limine-snapper.sh
 
   # -------------------- Restore visudo --------------------
-  $MANU_PATH/install/first-run/manu-first-run-restore-visudo
+  $MANU_PATH/install/first-run/manu-first-run-restore-visudo.sh
 
   # Mark as done — won't run again
   touch "$FLAG"
