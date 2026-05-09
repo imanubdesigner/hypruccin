@@ -1,3 +1,6 @@
+LOG="$HOME/.local/share/manu/first-run.log"
+echo "$(date): Creating default keyring..."
+
 KEYRING_DIR="$HOME/.local/share/keyrings"
 KEYRING_FILE="$KEYRING_DIR/Default_keyring.keyring"
 DEFAULT_FILE="$KEYRING_DIR/default"
@@ -20,3 +23,5 @@ EOF
 chmod 700 "$KEYRING_DIR"
 chmod 600 "$KEYRING_FILE"
 chmod 644 "$DEFAULT_FILE"
+
+echo "$(date): Default keyring created."

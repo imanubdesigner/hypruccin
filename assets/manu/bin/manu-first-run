@@ -18,14 +18,14 @@ mkdir -p "$(dirname "$LOG")"
   # -------------------- User-Dirs --------------------
   $MANU_PATH/install/first-run/manu-first-run-user-dirs.sh
 
+  # -------------------- GPG --------------------
+  $MANU_PATH/install/first-run/manu-first-run-gpg.sh
+
   # -------------------- Firewall --------------------
   $MANU_PATH/install/first-run/manu-first-run-firewall.sh
 
   # -------------------- Elephant --------------------
   $MANU_PATH/install/first-run/manu-first-run-elephant.sh
-
-  # -------------------- GPG --------------------
-  $MANU_PATH/install/first-run/manu-first-run-gpg.sh
 
   # -------------------- Default Keyring ------------------
   $MANU_PATH/install/first-run/manu-first-run-default-keyring.sh

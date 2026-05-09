@@ -1,5 +1,8 @@
 #!/bin/bash
 
+LOG="$HOME/.local/share/manu/first-run.log"
+echo "$(date): Starting SDDM setup..."
+
 # Refresh SDDM theme, install packages, and clean up tty1 autologin leftovers
 manu-refresh-sddm
 
@@ -34,3 +37,5 @@ sudo sed -i '/-password.*pam_gnome_keyring\.so/d' /etc/pam.d/sddm
 
 # Enable SDDM service (skip --now to avoid issues in chroot / manual installs)
 sudo systemctl enable sddm.service
+
+echo "$(date): SDDM setup completed."
