@@ -734,13 +734,14 @@ show_system_menu() {
   local options="󱄄  Screensaver\n󰌾  Lock"
   ! manu-toggle-enabled suspend-off && options="$options\n󰒲  Suspend"
   manu-hibernation-available && options="$options\n󰤁  Hibernate"
-  options="$options\n󰜉  Restart\n  Shutdown"
+  options="$options\n󰍃  Logout\n󰜉  Restart\n  Shutdown"
 
   case $(menu "System" "$options") in
   *Screensaver*) manu-launch-screensaver force ;;
   *Lock*) manu-system-lock ;;
   *Suspend*) systemctl suspend ;;
   *Hibernate*) systemctl hibernate ;;
+  *Logout*) manu-system-logout ;;
   *Restart*) manu-system-reboot ;;
   *Shutdown*) manu-system-shutdown ;;
   *) back_to show_main_menu ;;
