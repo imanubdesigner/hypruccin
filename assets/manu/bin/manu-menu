@@ -149,21 +149,48 @@ show_learn_menu() {
 }
 
 show_trigger_menu() {
-  case $(menu "Trigger" "  Capture\n󰧸  Transcode\n  Share\n󰨚  Toggle") in
-  *Capture*) show_capture_menu ;;
-  *Transcode*) show_transcode_menu ;;
+  case $(menu "Trigger" "󰔛  Reminder\n  Capture\n󰧸  Transcode\n  Share\n󰔎  Toggle\n  Hardware") in
+  *Reminder*) show_reminder_menu ;;  *Capture*) show_capture_menu ;;
+  *Transcode*) manu-transcode || back_to show_trigger_menu ;;
   *Share*) show_share_menu ;;
   *Toggle*) show_toggle_menu ;;
   *) show_main_menu ;;
   esac
 }
 
-show_transcode_menu() {
-  case $(menu "Transcode" "  Picture\n  Video") in
-  *Picture*) present_terminal "manu-transcode --path '$HOME/Pictures'" ;;
-  *Video*) present_terminal "manu-transcode --path '$HOME/Videos'" ;;
+show_reminder_menu() {
+  case $(menu "Reminder" "󰔛  Set one\n󰔛  Show all\n󰔛  Clear all") in
+  *Set*) show_custom_reminder_input ;;
+  *"Show all"*) manu-reminder show ;;
+  *"Clear all"*) manu-reminder clear ;;
   *) back_to show_trigger_menu ;;
   esac
+}
+
+show_custom_reminder_input() {
+  local minutes
+  minutes=$(manu-menu-input "Remind in minutes")
+
+  if [[ $minutes =~ ^[0-9]+$ ]] && ((minutes > 0)); then
+    show_reminder_message_input "$minutes"
+  elif [[ -n $minutes ]]; then
+    manu-notification-send "󰔛" "Invalid reminder" "Enter the number of minutes" -u critical
+    show_custom_reminder_input
+  else
+    back_to show_reminder_menu
+  fi
+}
+
+show_reminder_message_input() {
+  local minutes="$1"
+  local message
+  message=$(manu-menu-input "Reminder message")
+
+  if [[ -n $message ]]; then
+    manu-reminder "$minutes" "$message"
+  else
+    manu-reminder "$minutes"
+  fi
 }
 
 show_share_menu() {
@@ -202,38 +229,33 @@ show_power_profile_menu() {
 }
 
 show_style_menu() {
-  case $(menu "Style" "󰸌  Theme\n󰉔  Background\n  Font\n  Hyprland\n󱄄  Screensaver") in
+  case $(menu "Style" "󰸌  Theme\n󰉔  Background\n  Font\n  Hyprland\n󱄄  Screensaver\n  About") in
   *Theme*) show_theme_menu ;;
   *Background*) show_background_menu ;;
   *Font*) show_font_menu ;;
   *Hyprland*) open_in_editor ~/.config/hypr/modules/decorations.conf ;;
   *Screensaver*) show_screensaver_menu ;;
+  *About*) show_about_menu ;;
   *) show_main_menu ;;
   esac
 }
 
-show_screensaver_menu() {
-  case $(menu "Screensaver" "  Edit Text\n  Set From Image\n󱄄  Preview\n  Restore Default") in
-  *Text*) open_in_editor ~/.config/manu/branding/screensaver.txt ;;
-  *Image*) set_screensaver_from_image ;;
-  *Preview*) manu-launch-screensaver force ;;
-  *Default*) terminal bash -lc 'manu-screensaver-logo default; echo; read -n 1 -s -r -p "Press any key to close..."' ;;
+show_about_menu() {
+  case $(menu "About" "  Edit Text\n  Set From Image\n  Restore Default") in
+  *Text*) manu-branding-about text ;;
+  *Image*) manu-branding-about image ;;
+  *Default*) manu-branding-about reset ;;
   *) show_style_menu ;;
   esac
 }
 
-set_screensaver_from_image() {
-  terminal bash -lc '
-    image=$(fd --type file --ignore-case --extension svg --extension png . "$HOME" 2>/dev/null | fzf --prompt "Logo image> ")
-    if [[ -n $image ]]; then
-      if manu-screensaver-set-logo "$image"; then
-        echo
-        echo "Preview with: manu-launch-screensaver force"
-      fi
-      echo
-      read -n 1 -s -r -p "Press any key to close..."
-    fi
-  '
+show_screensaver_menu() {
+  case $(menu "Screensaver" "  Edit Text\n  Set From Image\n  Restore Default") in
+  *Text*) manu-branding-screensaver text ;;
+  *Image*) manu-branding-screensaver image ;;
+  *Default*) manu-branding-screensaver reset ;;
+  *) show_style_menu ;;
+  esac
 }
 
 show_theme_menu() {
@@ -402,7 +424,7 @@ show_install_font_menu() {
 }
 
 show_install_gaming_menu() {
-  case $(menu "Install" "  Steam\n  RetroArch\n󰍳  Minecraft\n󰢹  NVIDIA GeForce NOW\n  Xbox Cloud Gaming\n󰖺  Xbox Controller (󰂯)\n󰍹  Moonlight (GameStream)\n  Lutris (Battle.net)\n󱓟  Heroic (Epic Games)") in
+  case $(menu "Install" "  Steam\n  RetroArch\n󰍳  Minecraft\n󰢹  NVIDIA GeForce NOW\n  Xbox Cloud Gaming\n󰂯  Xbox Controller\n󰍹  Moonlight (GameStream)\n  Lutris (Battle.net)\n󱓟  Heroic (Epic Games)") in
   *Steam*) present_terminal manu-install-gaming-steam ;;
   *RetroArch*) present_terminal manu-install-gaming-retroarch ;;
   *Minecraft*) install_and_launch "Minecraft" "minecraft-launcher" "minecraft-launcher" ;;
@@ -415,18 +437,19 @@ show_install_gaming_menu() {
   *) show_install_menu ;;
   esac
 }
+
 show_remove_menu() {
-  case $(menu "Remove" "󰣇  Package\n  Web App\n  Browser\n  TUI\n󰵮  Development\n  Gaming\n  Dictation\n󰮯  Cache Packages\n  Clear Logs\n󰸌  Theme\n󰍲  Windows") in
-  *Cache*) present_terminal manu-packages-cleaning ;;
+  case $(menu "Remove" "󰣇  Package\n  Web App\n  TUI\n󰵮  Development\n󰸌  Theme\n  Browser\n  Dictation\n  Gaming\n󱪟  Logs\n  Cache\n󰍲  Windows") in
   *Package*) terminal manu-pkg-remove ;;
   *Web*) present_terminal manu-webapp-remove ;;
-  *Browser*) show_remove_browser_menu ;;
   *TUI*) present_terminal manu-tui-remove ;;
   *Development*) show_remove_development_menu ;;
-  *Gaming*) show_remove_gaming_menu ;;
-  *Dictation*) present_terminal manu-voxtype-remove ;;
-  *"Clear Logs"*) present_terminal manu-clear-journalctl ;;
   *Theme*) present_terminal manu-theme-remove ;;
+  *Browser*) show_remove_browser_menu ;;
+  *Dictation*) present_terminal manu-voxtype-remove ;;
+  *Gaming*) show_remove_gaming_menu ;;
+  *Logs*) present_terminal manu-clear-journalctl ;;
+  *Cache*) present_terminal manu-packages-cleaning ;;
   *Windows*) present_terminal "manu-windows-vm remove" ;;
   *) show_main_menu ;;
   esac
@@ -611,7 +634,7 @@ show_setup_default_browser_menu() {
   browser_desktop_exists zen.desktop && options="${options:+$options\n}󰖟  Zen"
 
   local current=""
-  case "$(manu-default-browser)" in
+  case "$(omarchy-default-browser)" in
   chromium) current="  Chromium" ;;
   chrome) current="󰊯  Chrome" ;;
   brave) current="󰖟  Brave" ;;
@@ -622,26 +645,26 @@ show_setup_default_browser_menu() {
   esac
 
   case $(menu "Default Browser" "$options" "" "$current") in
-  *Chromium*) manu-default-browser chromium ;;
-  *Chrome*) manu-default-browser chrome ;;
-  *"Brave Origin"*) manu-default-browser brave-origin ;;
-  *Brave*) manu-default-browser brave ;;
-  *Edge*) manu-default-browser edge ;;
-  *Firefox*) manu-default-browser firefox ;;
-  *Zen*) manu-default-browser zen ;;
+  *Chromium*) omarchy-default-browser chromium ;;
+  *Chrome*) omarchy-default-browser chrome ;;
+  *"Brave Origin"*) omarchy-default-browser brave-origin ;;
+  *Brave*) omarchy-default-browser brave ;;
+  *Edge*) omarchy-default-browser edge ;;
+  *Firefox*) omarchy-default-browser firefox ;;
+  *Zen*) omarchy-default-browser zen ;;
   *) show_setup_default_menu ;;
   esac
 }
 
 show_setup_default_terminal_menu() {
   local options=""
-  manu-cmd-present alacritty && options="$options  Alacritty"
-  manu-cmd-present foot && options="${options:+$options\n}  Foot"
-  manu-cmd-present ghostty && options="${options:+$options\n}  Ghostty"
-  manu-cmd-present kitty && options="${options:+$options\n}  Kitty"
+  omarchy-cmd-present alacritty && options="$options  Alacritty"
+  omarchy-cmd-present foot && options="${options:+$options\n}  Foot"
+  omarchy-cmd-present ghostty && options="${options:+$options\n}  Ghostty"
+  omarchy-cmd-present kitty && options="${options:+$options\n}  Kitty"
 
   local current=""
-  case "$(manu-default-terminal)" in
+  case "$(omarchy-default-terminal)" in
   alacritty) current="  Alacritty" ;;
   foot) current="  Foot" ;;
   ghostty) current="  Ghostty" ;;
@@ -649,31 +672,31 @@ show_setup_default_terminal_menu() {
   esac
 
   case $(menu "Default Terminal" "$options" "" "$current") in
-  *Alacritty*) manu-default-terminal alacritty ;;
-  *Foot*) manu-default-terminal foot ;;
-  *Ghostty*) manu-default-terminal ghostty ;;
-  *Kitty*) manu-default-terminal kitty ;;
+  *Alacritty*) omarchy-default-terminal alacritty ;;
+  *Foot*) omarchy-default-terminal foot ;;
+  *Ghostty*) omarchy-default-terminal ghostty ;;
+  *Kitty*) omarchy-default-terminal kitty ;;
   *) show_setup_default_menu ;;
   esac
 }
 
 show_setup_default_editor_menu() {
   local options=""
-  manu-cmd-present nvim && options="$options  Neovim"
-  manu-cmd-present code && options="${options:+$options\n}  VSCode"
-  manu-cmd-present cursor && options="${options:+$options\n}  Cursor"
-  manu-cmd-present zeditor && options="${options:+$options\n}  Zed"
-  manu-cmd-present sublime_text && options="${options:+$options\n}  Sublime Text"
-  manu-cmd-present helix && options="${options:+$options\n}  Helix"
-  manu-cmd-present vim && options="${options:+$options\n}  Vim"
-  manu-cmd-present emacs && options="${options:+$options\n}  Emacs"
+  omarchy-cmd-present nvim && options="$options  Neovim"
+  omarchy-cmd-present code && options="${options:+$options\n}  VSCode"
+  omarchy-cmd-present cursor && options="${options:+$options\n}  Cursor"
+  omarchy-cmd-present zeditor && options="${options:+$options\n}  Zed"
+  omarchy-cmd-present sublime_text && options="${options:+$options\n}  Sublime Text"
+  omarchy-cmd-present helix && options="${options:+$options\n}  Helix"
+  omarchy-cmd-present vim && options="${options:+$options\n}  Vim"
+  omarchy-cmd-present emacs && options="${options:+$options\n}  Emacs"
 
   local current=""
-  case "$(manu-default-editor)" in
+  case "$(omarchy-default-editor)" in
   nvim) current="  Neovim" ;;
   code) current="  VSCode" ;;
   cursor) current="  Cursor" ;;
-  zed) current="  Zed" ;;
+  zed | zeditor) current="  Zed" ;;
   sublime_text) current="  Sublime Text" ;;
   helix) current="  Helix" ;;
   vim) current="  Vim" ;;
@@ -681,14 +704,14 @@ show_setup_default_editor_menu() {
   esac
 
   case $(menu "Default Editor" "$options" "" "$current") in
-  *Neovim*) manu-default-editor nvim ;;
-  *VSCode*) manu-default-editor code ;;
-  *Cursor*) manu-default-editor cursor ;;
-  *Zed*) manu-default-editor zed ;;
-  *Sublime*) manu-default-editor sublime_text ;;
-  *Helix*) manu-default-editor helix ;;
-  *Vim*) manu-default-editor vim ;;
-  *Emacs*) manu-default-editor emacs ;;
+  *Neovim*) omarchy-default-editor nvim ;;
+  *VSCode*) omarchy-default-editor code ;;
+  *Cursor*) omarchy-default-editor cursor ;;
+  *Zed*) omarchy-default-editor zed ;;
+  *Sublime*) omarchy-default-editor sublime_text ;;
+  *Helix*) omarchy-default-editor helix ;;
+  *Vim*) omarchy-default-editor vim ;;
+  *Emacs*) omarchy-default-editor emacs ;;
   *) show_setup_default_menu ;;
   esac
 }
@@ -769,6 +792,8 @@ go_to_menu() {
   *transcode*) show_transcode_menu ;;
   *power*) show_power_profile_menu ;;
   *background*) show_background_menu ;;
+  *reminder-set*) show_custom_reminder_input ;;
+  *reminder*) show_reminder_menu ;;
   *capture*) show_capture_menu ;;
   *screenrecord*) show_screenrecord_menu ;;
   *install*) show_install_menu ;;

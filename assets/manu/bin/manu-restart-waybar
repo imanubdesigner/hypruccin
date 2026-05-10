@@ -3,9 +3,10 @@
 # manu:summary=Restart Waybar
 # manu:examples=manu restart waybar
 
-# Load updated gum env vars (convert ## to # for gum compatibility)
-if [ -f ~/.config/manu/current/theme/gum.env.conf ]; then
-  source <(sed 's/^env = /export /; s/,/=/; s/##/#/g' ~/.config/manu/current/theme/gum.env.conf | grep -v '^#')
-fi
+# # Load updated gum env vars (convert ## to # for gum compatibility)
+# if [ -f ~/.config/manu/current/theme/gum.env.conf ]; then
+#   source <(sed 's/^env = /export /; s/,/=/; s/##/#/g' ~/.config/manu/current/theme/gum.env.conf | grep -v '^#')
+# fi
 
-manu-restart-app waybar
+pkill -9 -x waybar
+setsid uwsm-app -- waybar >/dev/null 2>&1 &

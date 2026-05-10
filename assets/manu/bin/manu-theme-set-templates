@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # manu:summary=Generate themed config files from Manu templates
+# manu:hidden=true
 
 TEMPLATES_DIR="$MANU_PATH/default/themed"
 USER_TEMPLATES_DIR="$HOME/.config/manu/themed"

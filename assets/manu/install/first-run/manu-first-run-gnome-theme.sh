@@ -14,6 +14,7 @@ echo "$(date): Starting GNOME theme and Matugen configuration..."
 # Set GNOME interface themes
 gsettings set org.gnome.desktop.interface gtk-theme "Adwaita-dark"
 gsettings set org.gnome.desktop.interface color-scheme "prefer-dark"
+gsettings set org.gnome.desktop.interface gtk-enable-primary-paste true
 
 # Update icon cache to apply changes
 sudo gtk-update-icon-cache /usr/share/icons/Yaru

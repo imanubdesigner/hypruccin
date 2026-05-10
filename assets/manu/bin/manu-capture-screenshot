@@ -2,7 +2,7 @@
 
 # manu:summary=Take a screenshot
 # manu:group=capture
-# manu:args=[smart|region|windows|fullscreen] [slurp|copy] [--editor=<name>]
+# manu:args=[smart|region|windows|fullscreen] [slurp|copy|save] [--editor=<name>]
 # manu:examples=manu screenshot | manu capture screenshot region
 # manu:aliases=manu screenshot
 
@@ -112,16 +112,27 @@ smart | *)
   fi
   ;;
 esac
+
 [[ -z $SELECTION ]] && exit 0
 FILENAME="screenshot-$(date +'%Y-%m-%d_%H-%M-%S').png"
 FILEPATH="$OUTPUT_DIR/$FILENAME"
-if [[ $PROCESSING == "slurp" ]]; then
-  grim -g "$SELECTION" "$FILEPATH" || exit 1
-  wl-copy <"$FILEPATH"
-  (
-    ACTION=$(notify-send "Screenshot saved to clipboard and file" "Edit with Super + Alt + , (or click this)" -t 10000 -i "$FILEPATH" -A "default=edit")
-    [[ $ACTION == "default" ]] && open_editor "$FILEPATH"
-  ) &
-else
-  grim -g "$SELECTION" - | wl-copy
-fi
+
+case "$PROCESSING" in
+  slurp)
+    grim -g "$SELECTION" "$FILEPATH" || exit 1
+    echo "$FILEPATH"
+    wl-copy <"$FILEPATH"
+
+    (
+      ACTION=$(notify-send "Screenshot saved to clipboard and file" "Edit with Super + Alt + , (or click this)" -t 10000 -i "$FILEPATH" -A "default=edit")
+      [[ $ACTION == "default" ]] && open_editor "$FILEPATH"
+    ) >/dev/null 2>&1 &
+    ;;
+  copy)
+    grim -g "$SELECTION" - | wl-copy
+    ;;
+  save)
+    grim -g "$SELECTION" "$FILEPATH" || exit 1
+    echo "$FILEPATH"
+    ;;
+esac

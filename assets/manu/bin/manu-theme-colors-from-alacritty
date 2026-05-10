@@ -2,6 +2,7 @@
 
 # manu:summary=Generate a theme's colors.toml from its alacritty.toml palette
 # manu:args=<theme-dir>
+# manu:hidden=true
 
 set -e
 

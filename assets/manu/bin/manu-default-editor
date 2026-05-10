@@ -10,46 +10,14 @@ if (($# == 0)); then
 fi
 
 case "$1" in
-code)
-  editor="code"
-  name="VSCode"
-  glyph=""
-  ;;
-cursor)
-  editor="cursor"
-  name="Cursor"
-  glyph=""
-  ;;
-zed | zeditor)
-  editor="zeditor"
-  name="Zed"
-  glyph=""
-  ;;
-sublime_text)
-  editor="sublime_text"
-  name="Sublime Text"
-  glyph=""
-  ;;
-helix)
-  editor="helix"
-  name="Helix"
-  glyph=""
-  ;;
-vim)
-  editor="vim"
-  name="Vim"
-  glyph=""
-  ;;
-emacs)
-  editor="emacs"
-  name="Emacs"
-  glyph=""
-  ;;
-nvim)
-  editor="nvim"
-  name="Neovim"
-  glyph=""
-  ;;
+code) editor="code"; name="VSCode"; glyph="" ;;
+cursor) editor="cursor"; name="Cursor"; glyph="" ;;
+zed | zeditor) editor="zeditor"; name="Zed"; glyph="" ;;
+sublime_text) editor="sublime_text"; name="Sublime Text"; glyph="" ;;
+helix) editor="helix"; name="Helix"; glyph="" ;;
+vim) editor="vim"; name="Vim"; glyph="" ;;
+emacs) editor="emacs"; name="Emacs"; glyph="" ;;
+nvim) editor="nvim"; name="Neovim"; glyph="" ;;
 *)
   echo "Usage: manu-default-editor <code|cursor|zed|sublime_text|helix|vim|emacs|nvim>"
   exit 1

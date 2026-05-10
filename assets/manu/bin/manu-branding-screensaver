@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# manu:summary=Edit, set, or reset screensaver branding
+# manu:group=branding
+# manu:name=screensaver
+# manu:args=<image|text|reset>
+# manu:examples=manu branding screensaver image | manu branding screensaver text | manu branding screensaver reset
+
+set -euo pipefail
+
+case "${1:-}" in
+image)
+  image=$(manu-menu-file "Logo image" "$HOME" "svg png")
+  if [[ -n $image ]] && manu-transcode-ascii "$image" ~/.config/manu/branding/screensaver.txt; then
+    manu-launch-screensaver force >/dev/null 2>&1
+  fi
+  ;;
+text)
+  manu-launch-editor ~/.config/manu/branding/screensaver.txt >/dev/null 2>&1 && manu-launch-screensaver force >/dev/null 2>&1
+  ;;
+reset)
+  cp "$MANU_PATH/logo.txt" ~/.config/manu/branding/screensaver.txt && manu-launch-screensaver force >/dev/null 2>&1
+  ;;
+*)
+  echo "Usage: manu-branding-screensaver <image|text|reset>" >&2
+  exit 1
+  ;;
+esac

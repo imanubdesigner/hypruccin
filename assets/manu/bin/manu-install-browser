@@ -28,7 +28,7 @@ setup_firefox_preferences() {
 
 setup_firefox_wayland() {
   mkdir -p ~/.config/environment.d
-  echo "MOZ_ENABLE_WAYLAND=1" >~/.config/environment.d/manu-firefox-wayland.conf
+  echo "MOZ_ENABLE_WAYLAND=1" > ~/.config/environment.d/manu-firefox-wayland.conf
 }
 
 case $1 in
@@ -66,7 +66,7 @@ brave-origin)
   setup_policy_directory /etc/brave/policies/managed
   mkdir -p ~/.config
   # FIXME: Use normal chromium flags when Brave Origin wrapper has been fixed
-  echo "--load-extension=~/.local/share/manu/default/chromium/extensions/copy-url" >~/.config/brave-origin-beta-flags.conf
+  echo "--load-extension=~/.local/share/manu/default/chromium/extensions/copy-url" > ~/.config/brave-origin-beta-flags.conf
   manu-theme-set-browser
   announce_browser_installed "Brave Origin"
   ;;

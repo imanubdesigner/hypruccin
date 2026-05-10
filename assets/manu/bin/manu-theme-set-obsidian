@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # manu:summary=Sync Manu theme to all Obsidian vaults
+# manu:hidden=true
 
 CURRENT_THEME_DIR="$HOME/.config/manu/current/theme"
 

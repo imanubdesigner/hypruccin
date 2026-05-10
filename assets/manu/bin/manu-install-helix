@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# manu:summary=Install Helix and configure it to use the current Omarchy theme
+# manu:summary=Install Helix and configure it to use the current Manu theme
 
 echo "Installing Helix..."
 manu-pkg-add helix

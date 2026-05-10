@@ -10,6 +10,5 @@ ICON_DIR="$HOME/.local/share/applications/icons"
 echo "$(date): Starting TUI applications installation..."
 
 manu-tui-install "Disk Usage" "bash -c 'dust -r; read -n 1 -s'" float "$ICON_DIR/Disk Usage.png"
-manu-tui-install "Cliamp" "cliamp" tile "$ICON_DIR/Cliamp.png"
 
 echo "$(date): TUI applications installation completed."

@@ -45,7 +45,9 @@ mv "$NEXT_THEME_PATH" "$CURRENT_THEME_PATH"
 echo "$THEME_NAME" >"$HOME/.config/manu/current/theme.name"
 
 # Change background with theme
-manu-theme-bg-next
+if [[ $MANU_THEME_SKIP_BACKGROUND != "1" ]]; then
+  manu-theme-bg-next
+fi
 
 # Restart components to apply new theme
 if pgrep -x waybar >/dev/null; then
@@ -60,6 +62,7 @@ manu-restart-mako
 manu-restart-helix
 
 # Change app-specific themes
+manu-theme-set-foot
 manu-theme-set-gnome
 manu-theme-set-browser
 manu-theme-set-vscode
@@ -67,4 +70,4 @@ manu-theme-set-obsidian
 manu-theme-set-keyboard
 
 # Call hook on theme set
-manu-hook theme-set "$THEME_NAME"
+manu-hook theme-set "$THEME_NAME" >/dev/null

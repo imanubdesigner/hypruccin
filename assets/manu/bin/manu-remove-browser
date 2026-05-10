@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# manu:summary=Remove a supported browser and clean up manu browser defaults
+# manu:summary=Remove a supported browser and clean up Manu browser defaults
 # manu:args=<chrome|brave|brave-origin|edge|firefox|zen>
 # manu:examples=manu remove browser firefox | manu remove browser brave
 # manu:requires-sudo=true

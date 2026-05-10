@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# manu:summary=Set the default browser for Omarchy and XDG handlers
+# manu:summary=Set the default browser for Manu and XDG handlers
 # manu:args=[chromium|chrome|brave|brave-origin|edge|firefox|zen]
 # manu:examples=manu default browser firefox | manu default browser brave
 
@@ -19,41 +19,13 @@ if (($# == 0)); then
 fi
 
 case "$1" in
-chromium)
-  desktop_id="chromium.desktop"
-  name="Chromium"
-  glyph=""
-  ;;
-chrome)
-  desktop_id="google-chrome.desktop"
-  name="Chrome"
-  glyph="󰊯"
-  ;;
-brave)
-  desktop_id="brave-browser.desktop"
-  name="Brave"
-  glyph="󰖟"
-  ;;
-brave-origin)
-  desktop_id="brave-origin-beta.desktop"
-  name="Brave Origin"
-  glyph="󰖟"
-  ;;
-edge)
-  desktop_id="microsoft-edge.desktop"
-  name="Edge"
-  glyph="󰇩"
-  ;;
-firefox)
-  desktop_id="firefox.desktop"
-  name="Firefox"
-  glyph="󰈹"
-  ;;
-zen)
-  desktop_id="zen.desktop"
-  name="Zen"
-  glyph="󰰷"
-  ;;
+chromium) desktop_id="chromium.desktop"; name="Chromium"; glyph="" ;;
+chrome) desktop_id="google-chrome.desktop"; name="Chrome"; glyph="󰊯" ;;
+brave) desktop_id="brave-browser.desktop"; name="Brave"; glyph="󰖟" ;;
+brave-origin) desktop_id="brave-origin-beta.desktop"; name="Brave Origin"; glyph="󰖟" ;;
+edge) desktop_id="microsoft-edge.desktop"; name="Edge"; glyph="󰇩" ;;
+firefox) desktop_id="firefox.desktop"; name="Firefox"; glyph="󰈹" ;;
+zen) desktop_id="zen.desktop"; name="Zen"; glyph="󰰷" ;;
 *)
   echo "Usage: manu-default-browser <chromium|chrome|brave|brave-origin|edge|firefox|zen>"
   exit 1

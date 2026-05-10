@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# manu:summary=Prompt for text input with Walker
+# manu:group=menu
+# manu:name=input
+# manu:args=prompt [walker args...]
+# manu:examples=manu menu input Reminder|manu-menu-input "Reminder in minutes" --width 400
+
+set -euo pipefail
+
+prompt="${1:-Input}"
+if (( $# > 0 )); then
+  shift
+fi
+
+manu-launch-walker --dmenu --inputonly --width 295 --minheight 1 --maxheight 1 -p "$prompt…" "$@" 2>/dev/null

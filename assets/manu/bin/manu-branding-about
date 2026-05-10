@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# manu:summary=Edit, set, or reset About branding
+# manu:group=branding
+# manu:name=about
+# manu:args=<image|text|reset>
+# manu:examples=manu branding about image | manu branding about text | manu branding about reset
+
+set -euo pipefail
+
+case "${1:-}" in
+image)
+  image=$(manu-menu-file "Logo image" "$HOME" "svg png")
+  if [[ -n $image ]] && manu-transcode-ascii "$image" ~/.config/manu/branding/about.txt --width 54 --height 26 --mode block; then
+    manu-launch-about >/dev/null 2>&1
+  fi
+  ;;
+text)
+  manu-launch-editor ~/.config/manu/branding/about.txt >/dev/null 2>&1 && manu-launch-about >/dev/null 2>&1
+  ;;
+reset)
+  cp "$MANU_PATH/icon.txt" ~/.config/manu/branding/about.txt && manu-launch-about >/dev/null 2>&1
+  ;;
+*)
+  echo "Usage: manu-branding-about <image|text|reset>" >&2
+  exit 1
+  ;;
+esac
