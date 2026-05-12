@@ -45,6 +45,9 @@ mkdir -p "$(dirname "$LOG")"
   # -------------------- GNOME / GTK Theme --------------------
   $MANU_PATH/install/first-run/manu-first-run-gnome-theme.sh
 
+  # -------------------- Set Theme --------------------
+  $MANU_PATH/install/first-run/manu-first-run-set-theme.sh
+
   # -------------------- Mise Configuration --------------------
   $MANU_PATH/install/first-run/manu-first-run-mise.sh
 
