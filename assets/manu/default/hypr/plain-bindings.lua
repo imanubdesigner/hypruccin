@@ -1,0 +1,12 @@
+require("default.hypr.bindings.media")
+require("default.hypr.bindings.clipboard")
+require("default.hypr.bindings.tiling-v2")
+require("default.hypr.bindings.utilities")
+
+hl.bind("SUPER + RETURN", hl.dsp.exec_cmd([[uwsm-app -- xdg-terminal-exec --dir="$(manu-cmd-terminal-cwd)"]]), { description = "Terminal" })
+hl.bind("SUPER + SHIFT + RETURN", hl.dsp.exec_cmd("manu-launch-browser"), { description = "Browser" })
+hl.bind("SUPER + SHIFT + F", hl.dsp.exec_cmd("uwsm-app -- nautilus --new-window"), { description = "File manager" })
+hl.bind("SUPER + ALT + SHIFT + F", hl.dsp.exec_cmd([[uwsm-app -- nautilus --new-window "$(manu-cmd-terminal-cwd)"]]), { description = "File manager (cwd)" })
+hl.bind("SUPER + SHIFT + B", hl.dsp.exec_cmd("manu-launch-browser"), { description = "Browser" })
+hl.bind("SUPER + SHIFT + ALT + B", hl.dsp.exec_cmd("manu-launch-browser --private"), { description = "Browser (private)" })
+hl.bind("SUPER + SHIFT + N", hl.dsp.exec_cmd("manu-launch-editor"), { description = "Editor" })
